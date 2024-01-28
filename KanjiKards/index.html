@@ -1,0 +1,99 @@
+<html>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <title>Kanji Kards</title>
+        <style>
+            div.basic { margin: auto;
+                        width: 30%;
+                        padding: 5px;
+                        position: relative;
+                      }
+            div.lessons { column-count: auto;
+                          column-width: 100px;
+                        }
+            div.main { min-height: 200px;
+                       height: 35%;
+                       text-align: center;
+                       padding: 5px;
+                       border: 2px solid;
+                     }
+            div.cardbuttons { position: absolute; 
+                              bottom: 5px;
+                              margin: auto;
+                              width: 100%;
+                            }
+            div#cardface { margin: auto;
+                           width: 100%;
+                           height: 80%;
+                           text-align: center;
+                           position: relative;
+                         }
+            div.buildbuttons { text-align: center;
+                             }
+            h1, .box, img { top: 50%;
+                            left: 50%;
+                            position: absolute;
+                            margin: 0px;
+                            transform: translate(-50%, -50%);
+                          }
+            ul { list-style-type: none;
+                 margin: 0px;
+                 padding: 0px;
+               }
+            img.primitive { height: 50px;
+                }
+            @media screen and (max-width: 710px) { 
+                div.basic { width: 96%;
+                          }
+            }
+            input.button {
+                font-size: 14px;
+                padding: 5px;
+                margin-left: 5px;
+                margin-right: 5px;
+                margin-bottom: 2px;
+                margin-top: 2px;
+            }
+
+            .group {
+                background-color: #CCCCCC; 
+                padding: 2px; 
+                display: inline-block;
+                border-radius: 2px;
+            }
+        </style>
+        <script type="text/javascript" src="lz-string.js"></script>
+        <script type="text/javascript">
+            // Always load this script.
+            let script = document.createElement('script');
+            script.setAttribute('type', 'text/javascript');
+            script.src = 'kanji.js';
+            document.head.appendChild(script);
+            // document.writeln('<script type="text/javascript" src="kanji.js?"' + Math.random() * Math.random() + '><\/script>');
+        </script>
+        <script type="text/javascript" src="deck_manager.js"></script>
+    </head>
+    <body onload="return init();">
+        <div class="basic main">
+            <div id="cardface" onclick="return flip_card();"></div>
+            <div class="cardbuttons">
+                <input type="button" class="button" value="Nailed it!" id="correct" onclick="return right_answer();">
+                <input type="button" class="button" value="Oh..." id="wrong" onclick="return wrong_answer();">
+            </div>
+            <span id="stats">&nbsp;</span>
+        </div>
+        <div class="basic buildbuttons">
+            <input type="button" class="button" value="Shuffle" id="shuffle" onclick="return build_deck(false);">
+            <input type="button" class="button" value="Sequence" id="sequence" onclick="return build_deck(true);">
+            <div class="group">
+                <input type="button" class="button" value="Most Forgotten" id="forgotten" onclick="return build_deck(false, true);">
+                <input type="number" class="button" value="50" id="forgotten_qty" min="1" max="5000" style="width: 65px;">
+            </div>
+            <input type="button" class="button" value="Flip Cards" id="flip" onclick="return flip_cards();">
+        </div>
+        <div class="basic lessons">
+            <ul id="lessons"></ul>
+        </div>
+    </body>
+</html>

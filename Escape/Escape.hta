@@ -1,0 +1,1042 @@
+﻿<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta name="keywords" content="escape, game, games, fun, puzzle, challenge, puzzles, stadegy" />
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<meta http-equiv="Page-Enter" content="blendtrans(duration=2.0)" />
+<title>Esc&auml;p&eacute; (Es-ka-p&aacute;y)</title>
+
+<!—Note.  This game uses some different things than MuteGame.htm, so the changes in here need to be carried over. Do the same to the HTML Application. All changes are in the game packet that you printed.//-->
+
+<script type="text/javascript" language="JavaScript">
+<!--
+
+//MSIE 5.0 and up required for HTAs, so no broswer detection is needed
+
+//setting up more arrays and variables
+//onscreen says whether item should be shown
+//0=yes,1=no(in inventory or just not supposed to be shown)
+var show_screen=new Array();
+show_screen[0]='0:dbrick0';
+show_screen[1]='0:dhairpin0';
+show_screen[2]='1:dmatches0';
+show_screen[3]='0:dsock0';
+show_screen[4]='0:ddresser0';
+show_screen[5]='0:dmagnet0';
+show_screen[6]='1:ddrawerkey0';
+show_screen[7]='1:dnickel0';
+show_screen[8]='0:dcord0';
+show_screen[9]='0:dshredder0';
+show_screen[10]='0:dpaper0';
+show_screen[11]='0:dtape0';
+show_screen[12]='0:dbattery0a';
+show_screen[13]='0:dvacuum0';
+show_screen[14]='0:dtongs0';
+show_screen[15]='0:dstring0';
+show_screen[16]='0:dcandle0a';
+show_screen[17]='0:dbattery0b';
+show_screen[18]='0:dcheese0';
+show_screen[19]='1:dcandle1';
+show_screen[20]='1:dcandle0b';
+
+//since associative arrays have no length property, we make a function
+function alength(assoray){var len=0;for(var i in assoray){len++;}return len;}
+
+//some code to check if an element in an associative array exists 
+function acheck(assarray,element_name){var there=false;for (var check in assarray){if (check == element_name){there=true;return true;}}if(!there){return false;}}
+
+//for associative inventory array, 1=in inventory, 0=not in invetory(in game still)
+var inventory=new Array();
+inventory['batteries']=0;
+inventory['candle']=0;
+inventory['card']=0;
+inventory['cheese']=0;
+inventory['cord']=0;
+inventory['drawerkey']=0;
+inventory['dresserkey']=0;
+inventory['hairpin']=0;
+inventory['magnet']=0;
+inventory['matches']=0;
+inventory['nickel']=0;
+inventory['paper']=0;
+inventory['sock']=0;
+inventory['string']=0;
+inventory['tape']=0;
+inventory['tongs']=0;
+inventory['vacuum']=0;
+inventory['display']=0;
+
+//active0/1 will be the variables that hold the selections for combo validation
+var active0='0:0';
+var active1='0:0';
+
+//each item and image map gets a number(second#)(except rotateview areas)
+//each group of combos gets another number too(first#)
+//the rest get zeros
+var combo_number=new Array();
+combo_number['batteries']='4:4';
+combo_number['candle']='5:4';
+combo_number['card']='4:5';
+combo_number['cheese']='6:0';
+combo_number['cord']='7:4';
+combo_number['drawerkey']='8:0';
+combo_number['dresserkey']='9:0';
+combo_number['hairpin']='10:0';
+combo_number['magnet']='11:4';
+combo_number['matches']='5:5';
+combo_number['nickel']='12:0';
+combo_number['paper']='13:0';
+combo_number['sock']='7:5';
+combo_number['string']='11:5';
+combo_number['tape']='13:0';
+combo_number['tongs']='5:6';
+combo_number['vacuum']='7:6';
+combo_number['mousehole']='6:0';
+combo_number['machine']='12:0';
+combo_number['camera']='4:6';
+combo_number['grate']='11:6';
+combo_number['drawer']='8:0';
+combo_number['door']='10:0';
+combo_number['ern']='5:7';
+combo_number['udresser']='7:7';
+combo_number['dresser']='9:0';
+combo_number['candleern']='5:11';
+combo_number['cheesehole']='6:0';
+combo_number['drawerkeydrawer']='8:0';
+combo_number['dresserkeydresser']='9:0';
+combo_number['hairpindoor']='10:0';
+combo_number['magnetstring']='11:9';
+combo_number['magnetstringgrate']='11:15';
+combo_number['matchescandleern']='5:16';
+combo_number['nickelmachine']='12:0';
+combo_number['papertape']='13:0';
+combo_number['tongsmatchescandleern']='5:22';
+combo_number['vacuumcord']='7:10';
+combo_number['vacuumsock']='7:11';
+combo_number['vacuumcordsock']='7:15';
+combo_number['vacuumcordsockudresser']='7:22';
+combo_number['camerabatteries']='4:10';
+combo_number['cameracard']='4:11';
+combo_number['cameracardbatteries']='4:15';
+
+//so only one battery will apear out of the cut-out-book
+var battery_given=0;
+//only one nickel will drop
+var nickel_drop=0;
+//allows the brick to dissappear
+var brick_gone=0;
+
+//if these equal 0, you can't access these views because you need to open them first (with a key or hairpin)
+var lock_view0b=0;
+var lock_view0c=0;
+var lock_view1b=0;
+
+//these arrays hold the name of each div for each screen
+//some arrays are empty for there are no divs on that screen
+//there is one screen that has no array for it doesn't use the rotate function
+var view0a_divs=new Array('dbrick0','dhairpin0','dmatches0');
+var view0b_divs=new Array('dbrick0','dhairpin0','ddresser0','dsock0');
+var view0c_divs=new Array();
+var view1a_divs=new Array('dnickel0','ddrawerkey0');
+var view1b_divs=new Array('dnickel0','dmagnet0');
+var view2a_divs=new Array('dtape0','dcord0','dshredder0','dpaper0');
+var view2b_divs=new Array('dtape0','dcord0','dshredder0','dpaper0','dbattery0a','dvacuum0');
+var view3a_divs=new Array('dtongs0','dcandle1','dcandle0b');
+var view3b_divs=new Array('dtongs0','dcandle1','dbattery0b','dcheese0','dcandle0b');
+var view3c_divs=new Array('dtongs0','dcandle1','dcandle0a','dstring0','dcandle0b');
+var view4a_divs=new Array();
+
+//preloading inventory images
+var ibattery0=new Image();
+var ibattery1=new Image();
+var ibattery2=new Image();
+var ibattery3=new Image();
+var icandle0=new Image();
+var icard0=new Image();
+var icheese0=new Image();
+var icord0=new Image();
+var idrawerkey0=new Image();
+var idresserkey0=new Image();
+var idresser0=new Image();
+var ihairpin0=new Image();
+var imagnet0=new Image();
+var imagnet1=new Image();
+var imatches0=new Image();
+var inickel0=new Image();
+var ipaper0=new Image();
+var ipaper1=new Image();
+var isock0=new Image();
+var istring0=new Image();
+var itape0=new Image();
+var itongs0=new Image();
+var ivacuum0=new Image();
+var ivacuum1=new Image();
+var ivacuum2=new Image();
+var ivacuum3=new Image();
+ibattery0.src='ibattery0.gif';
+ibattery1.src='ibattery1.gif';
+ibattery2.src='ibattery2.gif';
+ibattery3.src='ibattery3.gif';
+icandle0.src='icandle0.gif';
+icard0.src='icard0.gif';
+icheese0.src='icheese0.gif';
+icord0.src='icord0.gif';
+idrawerkey0.src='idrawerkey0.gif';
+idresserkey0.src='idresserkey0.gif';
+idresser0.src='idressor0.gif';
+ihairpin0.src='ihairpin0.gif';
+imagnet0.src='imagnet0.gif';
+imagnet1.src='imagnet1.gif';
+imatches0.src='imatches0.gif';
+inickel0.src='inickel0.gif';
+ipaper0.src='ipaper0.gif';
+ipaper1.src='ipaper1.gif';
+isock0.src='isock0.gif';
+istring0.src='istring0.gif';
+itape0.src='itape0.gif';
+itongs0.src='itongs0.gif';
+ivacuum0.src='ivacuum0.gif';
+ivacuum1.src='ivacuum1.gif';
+ivacuum2.src='ivacuum2.gif';
+ivacuum3.src='ivacuum3.gif';
+
+//hide divs, hide screen div, show new screen div, show new divs
+function rotateView(screen_show,screen_hide,hide_array,show_array){
+for(var loop1=0;loop1<hide_array.length;loop1++){
+var vari1=hide_array[loop1];
+window.document.getElementById(vari1).style.visibility='hidden';}
+
+window.document.getElementById(screen_hide).style.visibility='hidden';
+window.document.getElementById(screen_show).style.visibility='visible';
+
+for(var loop2=0;loop2<show_array.length;loop2++){
+var vari2=show_array[loop2];
+for(var loop3=0;loop3<show_screen.length;loop3++){
+if(show_screen[loop3].indexOf(vari2)!=-1){
+var numeral=parseInt(show_screen[loop3]);
+if(numeral==0){window.document.getElementById(vari2).style.visibility='visible';}}}}}
+
+//hides div, keeps it hidden, adds item to inventory, swaps image
+function takeItem(div_name,iname,inventory_name){
+window.document.takeitem.run();
+var change_string='1:'+div_name;
+window.document.getElementById(div_name).style.visibility='hidden';
+for(var loop=0;loop<show_screen.length;loop++){if(show_screen[loop].indexOf(div_name)!=-1){show_screen[loop]=change_string;}}
+if((div_name=='dbattery0a')||(div_name=='dbattery0b')){
+if(inventory[iname]==3){inventory[iname]=4;eval('window.document.getElementById(iname).src=ibattery3.src;');}
+if(inventory[iname]==2){inventory[iname]=3;eval('window.document.getElementById(iname).src=ibattery2.src;');}
+if(inventory[iname]==1){inventory[iname]=2;eval('window.document.getElementById(iname).src=ibattery1.src;');}
+if(inventory[iname]==0){inventory[iname]=1;eval('window.document.getElementById(iname).src=ibattery0.src;');}
+}else{inventory[iname]=1;eval("window.document.getElementById(iname).src=inventory_name.src;");}}
+
+//shows div, keeps it shown
+function showItem(div_name){
+var change_string='0:'+div_name;
+window.document.getElementById(div_name).style.visibility='visible';
+for(var loop=0;loop<show_screen.length;loop++){if(show_screen[loop].indexOf(div_name)!=-1){show_screen[loop]=change_string;}}}
+
+//hides brick, keeps it hidden
+function brickHide(){show_screen[0]='1:dbrick0';window.document.getElementById('dbrick0').style.visibility='hidden';}
+
+//adds item to inventory, swaps image
+function giveItem(iname,inventory_name){
+if(iname=='batteries'){
+if(inventory[iname]==3){inventory[iname]=4;eval('window.document.getElementById(iname).src=ibattery3.src;');}
+if(inventory[iname]==2){inventory[iname]=3;eval('window.document.getElementById(iname).src=ibattery2.src;');}
+if(inventory[iname]==1){inventory[iname]=2;eval('window.document.getElementById(iname).src=ibattery1.src;');}
+if(inventory[iname]==0){inventory[iname]=1;eval('window.document.getElementById(iname).src=ibattery0.src;');}
+}else{inventory[iname]=1;eval("window.document.getElementById(iname).src=inventory_name.src;");}}
+
+//so the iname can be changed
+var slot_name=new Array();
+slot_name[0]='magnet';
+slot_name[1]='vacuum';
+slot_name[2]='camera';
+slot_name[3]='ern';
+slot_name[4]='paper';
+
+//if the combo is invalid, the selected item must be unselected using the value stored here
+var filter0,filtering;
+
+//see if there's something already selected
+//if not makes it selected
+//else, makes it secondary selected and sees if it's a valid combo
+function selectingItem(iname,sname){
+filtering=sname+'cell';
+var position0=active0.indexOf(':');
+var numeral0=active0.substring(0,position0);
+if(numeral0!=0){
+active1=combo_number[iname];
+var position1=active1.indexOf(':');
+var numeral1=active1.substring(0,position1);
+var filt=filter0.indexOf('cell');
+var fi=filter0.substring(0,filt);
+if((numeral0==numeral1)&&(sname!=fi)&&(numeral0!=5)&&(numeral1!=5)&&(numeral0!=4)&&(numeral1!=4)){validCombo(numeral1);}else{active0=active1;window.document.getElementById(filter0).style.filter='alpha(Opacity=100)';window.document.getElementById(filtering).style.filter='invert()';filter0=sname+'cell';active1=0;return;}}
+if(numeral0==0){active0=combo_number[iname];filter0=sname+'cell';window.document.getElementById(filtering).style.filter='invert()';return;}}
+
+//if something's not selected then no combo can occur
+//if something is, then we see if it's a valid combo
+function selectingArea(iname){
+var position0=active0.indexOf(':');
+var numeral0=active0.substring(0,position0);
+if(numeral0==0){return;}
+if(numeral0!=0){
+active1=combo_number[iname];
+var position1=active1.indexOf(':');
+var numeral1=active1.substring(0,position1);
+if(numeral0==numeral1){validCombo(numeral1);}else{active1=0;return;}}}
+
+//see's if the product is valid
+//if so, then go to corresponding function
+//else, select the second one as primary selection and have active1=0
+function validCombo(numeral){
+var position0=active0.indexOf(':');
+var position1=active1.indexOf(':');
+var numeral0=active0.substring(position0+1,active0.length);
+var numeral1=active1.substring(position1+1,active1.length);
+numeral0=parseInt(numeral0);
+numeral1=parseInt(numeral1);
+numeral=parseInt(numeral);
+var production=numeral0+numeral1;
+      if((numeral==5)&&(production==11)){candleErn();
+}else if(numeral==6){cheeseHole();
+}else if(numeral==8){drawerkeyDrawer();
+}else if(numeral==9){dresserkeyDresser();
+}else if(numeral==10){hairpinDoor();
+}else if((numeral==11)&&(production==9)){magnetString();
+}else if((numeral==11)&&(production==15)){magnetStringGrate();
+}else if((numeral==5)&&(production==16)){matchesCandleErn();
+}else if(numeral==12){nickelMachine();
+}else if(numeral==13){paperTape();
+}else if((numeral==5)&&(production==22)){tongsMatchesCandleErn();
+}else if((numeral==7)&&(production==9)){if(numeral1==4){active0='7:4';window.document.getElementById('sockcell').style.filter='alpha(Opacity=100)';window.document.getElementById('cordcell').style.filter='invert()';filter0='cordcell';active1=0;return;}if(numeral1==5){active0='7:5';window.document.getElementById('cordcell').style.filter='alpha(Opacity=100)';window.document.getElementById('sockcell').style.filter='invert()';filter0='sockcell';active1=0;return;}
+}else if((numeral==7)&&(production==10)){vacuumCord();
+}else if((numeral==7)&&(production==11)){vacuumSock();
+}else if((numeral==7)&&(production==15)){vacuumCordSock();
+}else if((numeral==7)&&(production==22)){vacuumCordSockUdresser();
+}else if((numeral==4)&&(production==10)){cameraBatteries();
+}else if((numeral==4)&&(production==11)){cameraCard();
+}else if((numeral==4)&&(production==15)){cameraCardBatteries();
+}else{return;}}
+
+function candleErn(){
+window.document.dropitem.run();
+window.document.getElementById('candlecell').style.filter='alpha(Opacity=50)';
+window.document.getElementById('dcandle0b').style.visibility='visible';
+inventory['candle']=0;
+slot_name[3]='candleern';
+show_screen[20]='0:dcandle0b';
+active0='0:0';active1='0:0';}
+
+function cheeseHole(){
+window.document.mousesqueak.run();
+window.document.getElementById('cheesecell').style.filter='alpha(Opacity=50)';
+window.document.getElementById('dmatches0').style.visibility='visible';
+inventory['cheese']=0;
+show_screen[2]='0:dmatches0';
+active0='0:0';active1='0:0';}
+
+function drawerkeyDrawer(){
+window.document.unlockdrawer.run();
+window.document.getElementById('drawerkeycell').style.filter='alpha(Opacity=50)';
+inventory['drawerkey']=0;
+lock_view1b=1;
+active0='0:0';active1='0:0';}
+
+function dresserkeyDresser(){
+window.document.unlockdrawer.run();
+window.document.getElementById('dresserkeycell').style.filter='alpha(Opacity=50)';
+inventory['dresserkey']=0;
+lock_view0b=1;
+active0='0:0';active1='0:0';}
+
+function hairpinDoor(){
+window.document.unlockdoor.run();
+window.document.getElementById('hairpincell').style.filter='alpha(Opacity=50)';
+inventory['hairpin']=0;
+lock_view0c=1;
+active0='0:0';active1='0:0';}
+
+function magnetString(){
+window.document.getElementById('magnetcell').style.filter='alpha(Opacity=100)';
+window.document.getElementById('stringcell').style.filter='alpha(Opacity=50)';
+window.document.images['magnet'].src=imagnet1.src;
+window.document.getElementById('magnetcell').style.filter='invert()';
+inventory['string']=0;
+slot_name[0]='magnetstring';
+active0=combo_number['magnetstring'];active1='0:0';
+filter0='magnetcell';}
+
+function magnetStringGrate(){
+window.document.magnetclink.run();
+window.document.getElementById('magnetcell').style.filter='alpha(Opacity=50)';
+inventory['magnet']=0;
+active0='0:0';active1='0:0';
+giveItem('batteries',ibattery0);}
+
+function matchesCandleErn(){
+window.document.matcheslight.run();
+window.document.getElementById('matchescell').style.filter='alpha(Opacity=50)';
+window.document.getElementById('dcandle0b').style.visibility='hidden';
+window.document.getElementById('dcandle1').style.visibility='visible';
+inventory['matches']=0;
+slot_name[3]='matchescandleern';
+show_screen[20]='1:dcandle0b';
+show_screen[19]='0:dcandle1';
+active0='0:0';active1='0:0';}
+
+function nickelMachine(){
+window.document.candymachine.run();
+window.document.getElementById('nickelcell').style.filter='alpha(Opacity=50)';
+window.document.getElementById('ddrawerkey0').style.visibility='visible';
+inventory['nickel']=0;
+show_screen[6]='0:ddrawerkey0';
+active0='0:0';active1='0:0';}
+
+function paperTape(){
+window.document.tapepaper.run();
+window.document.getElementById('papercell').style.filter='invert()';
+window.document.getElementById('tapecell').style.filter='alpha(Opacity=50)';
+window.document.images['paper'].src=ipaper1.src;
+inventory['tape']=0;
+slot_name[4]='papertape';
+active0=combo_number['papertape'];active1='0:0';
+filter0='papercell';}
+
+function tongsMatchesCandleErn(){
+window.document.recieveitem.run();
+window.document.getElementById('tongscell').style.filter='alpha(Opacity=50)';
+window.document.getElementById('dcandle1').style.visibility='hidden';
+show_screen[19]='1:dcandle1';
+inventory['tongs']=0;
+active0='0:0';active1='0:0';
+giveItem('dresserkey',idresserkey0);}
+
+function vacuumCord(){
+window.document.getElementById('vacuumcell').style.filter='invert()';
+window.document.getElementById('cordcell').style.filter='alpha(Opacity=50)';
+window.document.images['vacuum'].src=ivacuum2.src;
+inventory['cord']=0;
+slot_name[1]='vacuumcord';
+active0=combo_number['vacuumcord'];active1='0:0';
+filter0='vacuumcell';}
+
+function vacuumSock(){
+window.document.getElementById('vacuumcell').style.filter='invert()';
+window.document.getElementById('sockcell').style.filter='alpha(Opacity=50)';
+window.document.images['vacuum'].src=ivacuum1.src;
+inventory['sock']=0;
+slot_name[1]='vacuumsock';
+active0=combo_number['vacuumsock'];active1='0:0';
+filter0='vacuumcell';}
+
+function vacuumCordSock(){
+window.document.getElementById('vacuumcell').style.filter='invert()';
+window.document.getElementById('cordcell').style.filter='alpha(Opacity=50)';
+window.document.getElementById('sockcell').style.filter='alpha(Opacity=50)';
+window.document.images['vacuum'].src=ivacuum3.src;
+inventory['cord']=0;
+inventory['sock']=0;
+slot_name[1]='vacuumcordsock';
+active0=combo_number['vacuumcordsock'];active1='0:0';
+filter0='vacuumcell';}
+
+function vacuumCordSockUdresser(){
+window.document.vacuumcleaner.run();
+var the_timeout=setTimeout("window.document.magnetclink.run();",2800)
+window.document.getElementById('vacuumcell').style.filter='alpha(Opacity=50)';
+inventory['vacuum']=0;
+active0='0:0';active1='0:0';
+var a_timeout=setTimeout("giveItem('card',icard0);",2800)}
+
+function cameraBatteries(){
+window.document.dropitem.run();
+window.document.getElementById('batteriescell').style.filter='alpha(Opacity=50)';
+inventory['batteries']=0;
+slot_name[2]='camerabatteries';
+active0='0:0';active1='0:0';}
+
+function cameraCard(){
+window.document.dropitem.run();
+window.document.getElementById('cardcell').style.filter='alpha(Opacity=50)';
+inventory['card']=0;
+slot_name[2]='cameracard';
+active0='0:0';active1='0:0';}
+
+function cameraCardBatteries(){
+window.document.dropitem.run();
+window.document.getElementById('batteriescell').style.filter='alpha(Opacity=50)';
+window.document.getElementById('cardcell').style.filter='alpha(Opacity=50)';
+inventory['batteries']=0;
+inventory['card']=0;
+slot_name[2]='cameracardbatteries';
+active0='0:0';active1='0:0';}
+
+function beginning(){
+//text size can't change so message is unnecessary
+alert('One day, you get into a fight with your sibling and\nend up locked in one of the rooms in your house.\nYour sibling leaves you there, imprisoned and\ndoomed to starve. Now it\'s your job to get out.');}
+
+//a little variable to activate some help descriptions
+var helper_option=true;
+
+//-->
+</script>
+</head>
+<body onload="beginning();" onmouseover="window.status='';return true;" onmousedown="if((event.button==2)||(event.button==3)){alert('Hey!! Don\'t right-click. The\nmenu looks bad on the images! =)');}return false;">
+<!--Anti-spam link-->
+<div style="position:absolute; left=:15; top:15; z-index:0; visibility:hidden;"><a href="http://members.hostedscripts.com/antispam.html"><font style="font-size:14px;">Fight Spam</font></a></div>
+
+<!--All the Main Stuff. The Main Image and Inventory Table.-->
+<div id="heading" style="position:absolute; left:800px; top:17px; z-index:2; visibility:visible;">
+<table border="0" cellspacing="0" cellpadding="0" height="499"><tr>
+<td height="82" width="71">
+<center><font style="font-size:32px;"><b>E</b></font></center>
+</td></tr><tr>
+<td height="82" width="71">
+<center><font style="font-size:32px;"><b>s</b></font></center>
+</td></tr><tr>
+<td height="82" width="71">
+<center><font style="font-size:32px;"><b>c</b></font></center>
+</td></tr><tr>
+<td height="82" width="71">
+<center><font style="font-size:32px;"><b>&auml;</b></font></center>
+</td></tr><tr>
+<td height="82" width="71">
+<center><font style="font-size:32px;"><b>p</b></font></center>
+</td></tr><tr>
+<td height="82" width="71">
+<center><font style="font-size:32px;"><b>&eacute;</b></font></center>
+</td></tr></table>
+</div>
+
+<!--Each screen in a div--><span style="cursor: pointer">
+<div id="screen_view0a" style="position:absolute; left:10px; top:10px; z-index:1; visibility:visible;">
+<img src="view0a.gif" border="0" isMap useMap="#view0a" /></div>
+<div id="screen_view0b" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+<img src="view0b.gif" border="0" isMap useMap="#view0b" /></div>
+<div id="screen_view0c" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+<img src="view0c.gif" border="0" isMap useMap="#view0c" /></div>
+
+<div id="screen_view1a" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+<img src="view1a.gif" border="0" isMap useMap="#view1a" /></div>
+<div id="screen_view1b" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+<img src="view1b.gif" border="0" isMap useMap="#view1b" /></div>
+
+<div id="screen_view2a" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+<img src="view2a.gif" border="0" isMap useMap="#view2a" /></div>
+<div id="screen_view2b" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+<img src="view2b.gif" border="0" isMap useMap="#view2b" / ></div>
+
+<div id="screen_view3a" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+<img src="view3a.gif" border="0" isMap useMap="#view3a" /></div>
+<div id="screen_view3b" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+<img src="view3b.gif" border="0" isMap useMap="#view3b" /></div>
+<div id="screen_view3c" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+<img src="view3c.gif" border="0" isMap useMap="#view3c" /></div>
+<div id="screen_view3d" style="position:absolute; left:10px; top:10px; z-index:4; visibility:hidden;">
+<img src="view3d.gif" border="0" isMap useMap="#view3d" /></div>
+
+<div id="screen_view4a" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+<img src="view4a.gif" border="0" isMap useMap="#view4a" /></div></span>
+
+<div id="controls" style="position:absolute; left:10px; top:495px; z-index:1; visibility:visible;">
+<form id="help">
+<input type="button" id="game_controls" name="game_controls" value="Game Controls" onClick="alert('Click on a side wall to see that wall.\nClick on objects to pick them up.\n Basically, click anywhere to see if\nanything happens.');">
+</form>
+</div>
+
+<div id="goptions" style="position:absolute; left:460px; top:490px; z-index:1; cursor:pointer; visibility:visible;">
+<form id=”game_options”>
+<input type="checkbox" id=”helper” name="helper" checked="checked" onClick="if(this.checked){helper_option=true;}else{helper_option=false;}"><font style="font-size:15px;">Item Descriptions&nbsp;</font>
+</form>
+</div>
+
+<div id="spoiler" style="position:absolute; left:589px; top:514px; z-index:1; cursor:pointer; visibility:visible;"><center>
+<a href="javascript:void(0)" onClick="window.open('ErnDescription.htm','wax_ern','width=500,height=450,resizable,dependant');"><font color="#9900CC" style="font-size:15px;"><b>A Description of the Purple Thing</b></font></a><br />
+</center></div>
+
+<!--Inventory Table Right Here.-->
+<div id="inventory_table" style="position:absolute; left:588px; top:10px; z-index:1; visibility:visible; cursor:pointer;">
+<table border="1" cellspacing="0" cellpadding="0" height="499" bgcolor="white"><tr>
+<td height="82" width="71" id="batteriescell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['batteries']>0)){displayText('Batteries.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['batteries']==4){selectingItem('batteries','batteries');}return false;"><img src="iblank0.gif" border="0" id=”batteries” name="batteries" /></a>
+</center></td>
+<td height="82" width="71" id="candlecell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['candle']>0)){displayText('A fat<br />Candle.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['candle']==1){selectingItem('candle','candle');}return false;"><img src="iblank0.gif" border="0" id=”candle” name="candle" /></a>
+</center></td>
+<td height="82" width="71" id="cardcell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['card']>0)){displayText('A<br />memory<br />card.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['card']==1){selectingItem('card','card');}return false;"><img src="iblank0.gif" border="0" id=”card” name="card" /></a>
+</center></td></tr><tr>
+<td height="82" width="71" id="cheesecell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['cheese']>0)){displayText('A swiss<br />cheese<br />wedge.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['cheese']==1){selectingItem('cheese','cheese');}return false;"><img src="iblank0.gif" border="0" id=”cheese” name="cheese" /></a>
+</center></td>
+<td height="82" width="71" id="cordcell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['cord']>0)){displayText('A<br />power<br />cord.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['cord']==1){selectingItem('cord','cord');}return false;"><img src="iblank0.gif" border="0" id=”cord” name="cord" /></a>
+</center></td>
+<td height="82" width="71" id="drawerkeycell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['drawerkey']>0)){displayText('A<br />silver<br />key.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['drawerkey']==1){selectingItem('drawerkey','drawerkey');}return false;"><img src="iblank0.gif" border="0" id=”drawerkey” name="drawerkey" /></a>
+</center></td></tr><tr>
+<td height="82" width="71" id="dresserkeycell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['dresserkey']>0)){displayText('A gold<br />key.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['dresserkey']==1){selectingItem('dresserkey','dresserkey');}return false;"><img src="iblank0.gif" border="0" id=”dresserkey” name="dresserkey" /></a>
+</center></td>
+<td height="82" width="71" id="hairpincell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['hairpin']>0)){displayText('A<br />hairpin.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['hairpin']==1){selectingItem('hairpin','hairpin');}return false;"><img src="iblank0.gif" border="0" id=”hairpin” name="hairpin" /></a>
+</center></td>
+<td height="82" width="71" id="magnetcell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['magnet']>0)){displayText('A<br />magnet.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['magnet']==1){selectingItem(slot_name[0],'magnet');}return false;"><img src="iblank0.gif" border="0" id=”magnet” name="magnet" /></a>
+</center></td></tr><tr>
+<td height="82" width="71" id="matchescell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['matches']>0)){displayText('A book<br />of<br />matches.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['matches']==1){selectingItem('matches','matches');}return false;"><img src="iblank0.gif" border="0" id=”matches” name="matches" /></a>
+</center></td>
+<td height="82" width="71" id="nickelcell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['nickel']>0)){displayText('A U.S.<br />nickel.<br />($0.05)');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['nickel']==1){selectingItem('nickel','nickel');}return false;"><img src="iblank0.gif" border="0" id=”nickel” name="nickel" /></a>
+</center></td>
+<td height="82" width="71" id="papercell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['paper']>0)){displayText('Paper.');}window.status='';return true;" onMouseOut="resetText();" onClick="if((inventory['paper']==1)&&(slot_name[4]!='papertape')){selectingItem('paper','paper');}if((inventory['paper']==1)&&(slot_name[4]=='papertape')){window.open('credits.htm','CREDITS','width=320,height=350,dependant,scrollbars,resizable');}return false;"><img src="iblank0.gif" border="0" id=”paper” name="paper" /></a>
+</center></td></tr><tr>
+<td height="82" width="71" id="sockcell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['sock']>0)){displayText('A clean<br />sock.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['sock']==1){selectingItem('sock','sock');}return false;"><img src="iblank0.gif" border="0" id=”sock” name="sock" /></a>
+</center></td>
+<td height="82" width="71" id="stringcell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['string']>0)){displayText('A spool<br />of<br />thread.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['string']==1){selectingItem('string','string');}return false;"><img src="iblank0.gif" border="0" id=”string” name="string" /></a>
+</center></td>
+<td height="82" width="71" id="tapecell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['tape']>0)){displayText('Tape.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['tape']==1){selectingItem('tape','tape');}return false;"><img src="iblank0.gif" border="0" id=”tape” name="tape" /></a>
+</center></td></tr><tr>
+<td height="82" width="71" id="tongscell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['tongs']>0)){displayText('Tongs.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['tongs']==1){selectingItem('tongs','tongs');}return false;"><img src="iblank0.gif" border="0" id=”tongs” name="tongs" /></a>
+</center></td>
+<td height="82" width="71" id="vacuumcell" style="filter:alpha(Opacity=100);background:white"><center>
+<a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['vacuum']>0)){displayText('A<br />vacuum<br />cleaner.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['vacuum']==1){selectingItem(slot_name[1],'vacuum');}return false;"><img src="iblank0.gif" border="0" id=”vacuum” name="vacuum" /></a>
+</center></td>
+<td height="82" width="71"><center>
+<font style="font-size:15px;" id="display">&nbsp;</font>
+</center></td></tr></table></div>
+
+<div id="errorreportANTISPAMED" style="position:absolute; left:170px; top:500px; z-index:0; visibility:visible;">
+<center>
+<!--EScrambled Email Address Code-->
+<!--For help with this code go to-->
+<!--http://innerpeace.org/escrambler.shtml-->
+<script>
+<!--
+function escramble(){
+var a,b,c,d,e,f,g,h,i;
+a='<a href=\"mai';
+b='LottoPick1';
+c='\">';
+a+='lto:';
+b+='@';
+e='</a>';
+f='If you find any bugs, you can email me here.';
+b+='aol.com';
+g='<img src=\"';
+h='';
+i='\" alt="Email us." border="0">';
+if (f) d=f;
+else if(h){d=g+h+i;}
+else d=b;
+document.write('<font style="font-size:15px;">'+a+b+c+d+e+'</font>');}
+escramble();
+//-->
+</script>
+<!--End EScrambled Email Address Code-->
+<br /><font style="font-size:10px;">Note: This version is known to be fully functional only on Netscape<br />Navigator 8.0.2 with "Display Like Internet Explorer" on and MSIE.</font></center>
+</div>
+
+<!--All the divs...-->
+<div id="dbrick0" style="position:absolute; left:142px; top:452px; z-index:3; visibility:visible">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="if(brick_gone==1){window.document.brickmove.run();brickHide();show_screen[0]='1:dbrick0';}return false;"><img src="dbrick0.gif" border="0" /></a>
+</div>
+<div id="dhairpin0" style="position:absolute; left:152px; top:452px; z-index:2; visibility:visible">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dhairpin0','hairpin',ihairpin0);return false;"><img src="dhairpin0.gif" border="0" /></a>
+</div>
+<div id="dmatches0" style="position:absolute; left:262px; top:440px; z-index:2; visibility:hidden">
+<a href="javascript:void(0)" onMouseOver="displayText('Look at\nwhat the\nmouse left.');window.status='';return true;" onMouseOut="resetText();" onClick="takeItem('dmatches0','matches',imatches0);return false;"><img src="dmatches0.gif" border="0" /></a>
+</div>
+<div id="dsock0" style="position:absolute; left:390px; top:403px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dsock0','sock',isock0);return false;"><img src="dsock0.gif" border="0" /></a>
+</div>
+<div id="ddresser0" style="position:absolute; left:346px; top:411px; z-index:3; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="window.document.drawerclose.run();rotateView('screen_view0a','screen_view0b',view0b_divs,view0a_divs);return false;"><img src="ddresser0.gif" border="0" /></a>
+</div>
+
+<div id="dmagnet0" style="position:absolute; left:133px; top:397px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dmagnet0','magnet',imagnet0);return false;"><img src="dmagnet0.gif" border="0" /></a>
+</div>
+<div id="ddrawerkey0" style="position:absolute; left:150px; top:365px; z-index:2; visibility:hidden">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('ddrawerkey0','drawerkey',idrawerkey0);return false;"><img src="ddrawerkey0.gif" border="0" /></a>
+</div>
+<div id="dnickel0" style="position:absolute; left:357px; top:187px; z-index:2; visibility:hidden">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dnickel0','nickel',inickel0);return false;"><img src="dnickel0.gif" border="0" /></a>
+</div>
+
+<div id="dcord0" style="position:absolute; left:361px; top:420px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dcord0','cord',icord0);return false;"><img src="dcord0.gif" border="0" /></a>
+</div>
+<div id="dshredder0" style="position:absolute; left:214px; top:394px; z-index:3; visibility:hidden;">
+<span style="cursor: pointer"><img src="dshredder0.gif" border="0" /></span>
+</div>
+<div id="dpaper0" style="position:absolute; left:216px; top:386px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dpaper0','paper',ipaper0);return false;"><img src="dpaper0.gif" border="0" /></a>
+</div>
+<div id="dtape0" style="position:absolute; left:360px; top:380px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dtape0','tape',itape0);return false;"><img src="dtape0.gif" border="0" /></a>
+</div>
+<div id="dbattery0a" style="position:absolute; left:150px; top:270px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dbattery0a','batteries',ibattery0);return false;"><img src="dbattery0.gif" border="0" /></a>
+</div>
+<div id="dvacuum0" style="position:absolute; left:120px; top:370px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dvacuum0','vacuum',ivacuum0);return false;"><img src="dvacuum0.gif" border="0" /></a>
+</div>
+
+<div id="dtongs0" style="position:absolute; left:197px; top:345px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dtongs0','tongs',itongs0);return false;"><img src="dtongs0.gif" border="0" /></a>
+</div>
+<div id="dstring0" style="position:absolute; left:330px; top:257px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dstring0','string',istring0);return false;"><img src="dstring0.gif" border="0" /></a>
+</div>
+<div id="dcandle0a" style="position:absolute; left:360px; top:257px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dcandle0a','candle',icandle0);return false;"><img src="dcandle0.gif" border="0" /></a>
+</div>
+<div id="dbattery0b" style="position:absolute; left:350px; top:427px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dbattery0b','batteries',ibattery0);return false;"><img src="dbattery0.gif" border="0" /></a>
+</div>
+<div id="dcheese0" style="position:absolute; left:362px; top:415px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dcheese0','cheese',icheese0);return false;"><img src="dcheese0.gif" border="0" /></a>
+</div>
+<div id="dcandle1" style="position:absolute; left:127px; top:399px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="selectingArea(slot_name[3]);return false;"><img src="dcandle1.gif" border="0" /></a>
+</div>
+<div id="dcandle0b" style="position:absolute; left:127px; top:399px; z-index:2; visibility:hidden;">
+<a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="selectingArea(slot_name[3]);return false;"><img src="dcandle0.gif" border="0" /></a>
+</div>
+
+<script language="JavaScript">
+<!--
+function displayText(text_string){window.document.getElementById('display').innerHTML='<font style="font-size:15px;">'+text_string+'</font>';}
+function resetText(){window.document.getElementById('display').innerHTML='<img src="iblank0.gif" border="0" />';}
+//-->
+</script>
+
+<!--All the Image Maps-->
+<MAP id=”view0a” name="view0a">
+<AREA coords="0,0,48,48,48,433,0,481" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view1a','screen_view0a',view0a_divs,view1a_divs);return false;" />
+<AREA coords="577,0,577,481,529,433,529,48" href="javascript:void(0)" shape="POLY" onClick="if(slot_name[3]=='ern'){rotateView('screen_view3a','screen_view0a',view0a_divs,view3a_divs);}else{rotateView('screen_view3a','screen_view0a',view0a_divs,view3a_divs);}return false;" />
+<AREA coords="61,180,181,432" href="javascript:void(0)" shape="RECT" onClick="if(lock_view0c==1){window.document.dooropen.run();rotateView('screen_view0c','screen_view0a',view0a_divs,view0c_divs);}else{window.document.locked.run();selectingArea('door');}return false;" />
+<AREA coords="250,189,459,315" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('www.<br />lionking<br />.org');" onMouseOut="resetText();" onClick="alert('Nice painting!');return false;" />
+<AREA coords="313,388,433,412" href="javascript:void(0)" shape="RECT" onClick="if(lock_view0b==1){window.document.draweropen.run();rotateView('screen_view0b','screen_view0a',view0a_divs,view0b_divs);}else{window.document.locked.run();selectingArea('dresser');}return false;" />
+<AREA coords="252,420,276,432" href="javascript:void(0)" shape="RECT" onClick="selectingArea('mousehole');return false;" />
+<AREA coords="313,444,432,456" href="javascript:void(0)" shape="RECT" onClick="selectingArea('udresser');return false;" />
+</MAP>
+<MAP id=”view0b” name="view0b">
+<AREA coords="0,0,48,48,48,433,0,481" href="javascript:void(0)" shape="POLY" onClick="window.document.drawerclose.run();rotateView('screen_view1a','screen_view0b',view0b_divs,view1a_divs);return false;" />
+<AREA coords="577,0,577,481,529,433,529,48" href="javascript:void(0)" shape="POLY" onClick="window.document.drawerclose.run();if(slot_name[3]=='ern'){rotateView('screen_view3a','screen_view0b',view0b_divs,view3a_divs);}else{rotateView('screen_view3a','screen_view0b',view0b_divs,view3a_divs);}return false;" />
+<AREA coords="61,180,181,432" href="javascript:void(0)" shape="RECT" onClick="if(lock_view0c==1){window.document.drawerclose.run();window.document.dooropen.run();rotateView('screen_view0c','screen_view0b',view0b_divs,view0c_divs);}else{window.document.locked.run();selectingArea('door');}return false;" />
+<AREA coords="250,189,459,315" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('www.<br>lionking<br>.org');" onMouseOut="resetText();" onClick="alert('Nice painting!');return false;" />
+<AREA coords="252,420,276,432" href="javascript:void(0)" shape="RECT" onClick="selectingArea('mousehole');return false;" />
+<AREA coords="313,444,432,456" href="javascript:void(0)" shape="RECT" onClick="selectingArea('udresser');return false;" />
+</MAP>
+<MAP id=”view0c” name="view0c">
+<AREA coords="0,0,48,48,48,433,0,481" href="javascript:void(0)" shape="POLY" onClick="window.document.doorclose.run();rotateView('screen_view1a','screen_view0c',view0c_divs,view1a_divs);return false;" />
+<AREA coords="577,0,577,481,529,433,529,48" href="javascript:void(0)" shape="POLY" onClick="window.document.doorclose.run();if(slot_name[3]=='ern'){rotateView('screen_view3a','screen_view0c',view0c_divs,view3a_divs);}else{rotateView('screen_view3a','screen_view0c',view0c_divs,view3a_divs);}return false;" />
+<AREA coords="61,180,181,432" href="javascript:void(0)" shape="RECT" onClick="window.document.endapplause.run();rotateView('screen_view4a','screen_view0c',view0c_divs,view4a_divs);return false;" />
+<AREA coords="250,189,459,315" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('www.<br>lionking<br>.org');" onMouseOut="resetText();" onClick="alert('Nice painting!');return false;" />
+<AREA coords="313,388,433,412" href="javascript:void(0)" shape="RECT" onClick="if(lock_view0b==1){window.document.doorclose.run();window.document.draweropen.run();rotateView('screen_view0b','screen_view0c',view0c_divs,view0b_divs);}return false;" />
+<AREA coords="252,420,276,432" href="javascript:void(0)" shape="RECT" onClick="return false;" />
+<AREA coords="313,444,432,456" href="javascript:void(0)" shape="RECT" onClick="return false;" />
+</MAP>
+
+<MAP id=”view1a” name="view1a">
+<AREA coords="0,0,48,48,48,433,0,481" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view2a','screen_view1a',view1a_divs,view2a_divs);return false;" />
+<AREA coords="577,0,577,481,528,432,528,49" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view0a','screen_view1a',view1a_divs,view0a_divs);return false;" />
+<AREA coords="300,276,312,312" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('Any<br>hollow<br>books?');" onMouseOut="resetText();" onClick="if(battery_given==0){window.document.bookclose.run();battery_given=1;giveItem('batteries',ibattery0);}return false;" />
+<AREA coords="252,204,348,432" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('Any<br>hollow<br>books?');" onMouseOut="resetText();" onClick="return false;" />
+<AREA coords="345,168,351,168,357,171,360,171,365,177,365,184,355,184,355,189,350,189,350,186,346,186,346,189,341,189,341,184,336,179,336,176" href="javascript:void(0)" shape="POLY" onClick="if(nickel_drop==0){nickel_drop=1;window.document.nickeldrop.run();showItem('dnickel0');show_screen[7]='0:dnickel0';}return false;" />
+<AREA coords="140,313,152,313,158,318,158,348,160,350,160,360,148,370,144,370,132,360,132,350,134,348,134,318," href="javascript:void(0)" shape="POLY" onClick="selectingArea('machine');return false;" />
+<AREA coords="119,379,155,403" href="javascript:void(0)" shape="RECT" onClick="if(lock_view1b==1){window.document.draweropen.run();rotateView('screen_view1b','screen_view1a',view1a_divs,view1b_divs);}else{window.document.locked.run();selectingArea('drawer');}return false;" />
+</MAP>
+<MAP id=”view1b” name="view1b">
+<AREA coords="0,0,48,48,48,433,0,481" href="javascript:void(0)" shape="POLY" onClick="window.document.drawerclose.run();rotateView('screen_view2a','screen_view1b',view1b_divs,view2a_divs);return false;" />
+<AREA coords="577,0,577,481,528,432,528,49" href="javascript:void(0)" shape="POLY" onClick="window.document.drawerclose.run();rotateView('screen_view0a','screen_view1b',view1b_divs,view0a_divs);return false;" />
+<AREA coords="300,276,312,312" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('Any<br>hollow<br>books?');" onMouseOut="resetText();" onClick="if(battery_given==0){window.document.bookclose.run();battery_given=1;giveItem('batteries',ibattery0);}return false;" />
+<AREA coords="252,204,348,432" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('Any<br>hollow<br>books?');" onMouseOut="resetText();" onClick="return false;" />
+<AREA coords="345,168,351,168,357,171,360,171,365,177,365,184,355,184,355,189,350,189,350,186,346,186,346,189,341,189,341,184,336,179,336,176" href="javascript:void(0)" shape="POLY" onClick="return false;" />
+<AREA coords="140,313,152,313,158,318,158,348,160,350,160,360,148,370,144,370,132,360,132,350,134,348,134,318," href="javascript:void(0)" shape="POLY" onClick="return false;" />
+<AREA coords="107,403,143,427" href="javascript:void(0)" shape="RECT" onClick="window.document.drawerclose.run();rotateView('screen_view1a','screen_view1b',view1b_divs,view1a_divs);return false;" />
+</MAP>
+
+<MAP id=”view2a” name="view2a">
+<AREA coords="0,0,48,48,48,433,0,481" href="javascript:void(0)" shape="POLY" onClick="if(slot_name[3]=='ern'){rotateView('screen_view3a','screen_view2a',view2a_divs,view3a_divs);}else{rotateView('screen_view3a','screen_view2a',view2a_divs,view3a_divs);}return false;" />
+<AREA coords="577,0,577,481,529,433,529,48" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view1a','screen_view2a',view2a_divs,view1a_divs);return false;" />
+<AREA coords="72,180,192,432" href="javascript:void(0)" shape="RECT" onClick="window.document.dooropen.run();rotateView('screen_view2b','screen_view2a',view2a_divs,view2b_divs);return false;" />
+<AREA coords="287,251,422,314" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('If only I<br>had a<br>hammer...');" onMouseOut="resetText();" onClick="window.document.windowbreak.stop();window.document.windowbreak.run();return false;" />
+</MAP>
+<MAP id=”view2b” name="view2b">
+<AREA coords="72,180,72,432,12,481,12,229" href="javascript:void(0)" shape="POLY" onClick="window.document.doorclose.run();rotateView('screen_view2a','screen_view2b',view2b_divs,view2a_divs);return false;" />
+<AREA coords="0,0,48,48,48,433,0,481" href="javascript:void(0)" shape="POLY" onClick="window.document.doorclose.run();if(slot_name[3]=='ern'){rotateView('screen_view3a','screen_view2b',view2b_divs,view3a_divs);}else{rotateView('screen_view3a','screen_view2b',view2b_divs,view3a_divs);}return false;" />
+<AREA coords="577,0,577,481,529,433,529,48" href="javascript:void(0)" shape="POLY" alt="Rotate Right" onClick="window.document.doorclose.run();rotateView('screen_view1a','screen_view2b',view2b_divs,view1a_divs);return false;" />
+<AREA coords="287,251,422,314" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('If only I<br>had a<br>hammer...');" onMouseOut="resetText();" onClick="window.document.windowbreak.stop();window.document.windowbreak.run();return false;" />
+</MAP>
+
+<MAP id=”view3a” name="view3a">
+<AREA coords="0,0,48,48,48,433,0,481" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view0a','screen_view3a',view3a_divs,view0a_divs);return false;" />
+<AREA coords="577,0,577,481,528,432,528,49" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view2a','screen_view3a',view3a_divs,view2a_divs);return false;"/ >
+<AREA coords="300,192,396,312" href="javascript:void(0)" shape="RECT" onClick="window.document.cabinetdoor.stop();window.document.cabinetdoor.run();if(slot_name[3]=='ern'){rotateView('screen_view3c','screen_view3a',view3a_divs,view3c_divs);}else{rotateView('screen_view3c','screen_view3a',view3a_divs,view3c_divs);}return false;" />
+<AREA coords="336,384,385,445" href="javascript:void(0)" shape="RECT" onClick="rotateView('screen_view3b','screen_view3a',view3a_divs,view3b_divs);return false;" />
+<AREA coords="420,437,456,437,468,449,432,449" href="javascript:void(0)" shape="POLY" onClick="selectingArea('grate');return false;" />
+<AREA coords="108,372,132,408" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('A scented<br>wax<br>burner.');" onMouseOut="resetText();" onClick="selectingArea(slot_name[3]);return false;" />
+<AREA coords="233,401,8" href="javascript:void(0)" shape="circle" onClick="if(slot_name[2]=='cameracardbatteries'){window.document.cameraon.run();window.document.getElementById('screen_view3d').style.visibility='visible';}else{selectingArea(slot_name[2])};return false;" />
+<AREA coords="209,381,217,381,217,377,225,377,229,381,233,381,240,388,240,404,216,404,209,397" href="javascript:void(0)" shape="POLY" onClick="selectingArea(slot_name[2]);return false;" />
+</MAP>
+<MAP id=”view3b” name="view3b">
+<AREA coords="0,0,48,48,48,433,0,481" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view0a','screen_view3b',view3b_divs,view0a_divs);return false;" />
+<AREA coords="577,0,577,481,528,432,528,49" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view2a','screen_view3b',view3b_divs,view2a_divs);return false;" />
+<AREA coords="300,192,396,312" href="javascript:void(0)" shape="RECT" onClick="window.document.cabinetdoor.stop();window.document.cabinetdoor.run();if(slot_name[3]=='ern'){rotateView('screen_view3c','screen_view3b',view3b_divs,view3c_divs);}else{rotateView('screen_view3c','screen_view3b',view3b_divs,view3c_divs);}return false;" />
+<AREA coords="288,384,336,445" href="javascript:void(0)" shape="RECT" onClick="rotateView('screen_view3a','screen_view3b',view3b_divs,view3a_divs);return false;" />
+<AREA coords="420,437,456,437,468,449,432,449" href="javascript:void(0)" shape="POLY" onClick="selectingArea('grate');return false;" />
+<AREA coords="108,372,132,408" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('A scented<br>wax<br>burner.');" onMouseOut="resetText();" onClick="selectingArea(slot_name[3]);return false;" />
+<AREA coords="233,401,8" href="javascript:void(0)" shape="circle" onClick="if(slot_name[2]=='cameracardbatteries'){window.document.cameraon.run();window.document.getElementById('screen_view3d').style.visibility='visible';}else{selectingArea(slot_name[2])};return false;" />
+<AREA coords="209,381,217,381,217,377,225,377,229,381,233,381,240,388,240,404,216,404,209,397" href="javascript:void(0)" shape="POLY" onClick="selectingArea(slot_name[2]);return false;" />
+</MAP>
+<MAP id=”view3c” name="view3c">
+<AREA coords="0,0,48,48,48,433,0,481" href="javascript:void(0)" shape="POLY" onClick="window.document.cabinetdoor.stop();window.document.cabinetdoor.run();rotateView('screen_view0a','screen_view3c',view3c_divs,view0a_divs);return false;" />
+<AREA coords="577,0,577,481,528,432,528,49" href="javascript:void(0)" shape="POLY" onClick="window.document.cabinetdoor.stop();window.document.cabinetdoor.run();rotateView('screen_view2a','screen_view3c',view3c_divs,view2a_divs);return false;" />
+<AREA coords="204,192,300,312" href="javascript:void(0)" shape="RECT" onClick="window.document.cabinetdoor.stop();window.document.cabinetdoor.run();if(slot_name[3]=='ern'){rotateView('screen_view3a','screen_view3c',view3c_divs,view3a_divs);}else{rotateView('screen_view3a','screen_view3c',view3c_divs,view3a_divs);}return false;" />
+<AREA coords="336,384,385,445" href="javascript:void(0)" shape="RECT" onClick="window.document.cabinetdoor.stop();window.document.cabinetdoor.run();if(slot_name[3]=='ern'){rotateView('screen_view3b','screen_view3c',view3c_divs,view3b_divs);}else{rotateView('screen_view3b','screen_view3c',view3c_divs,view3b_divs);}return false;" />
+<AREA coords="420,437,456,437,468,449,432,449" href="javascript:void(0)" shape="POLY" onClick="selectingArea('grate');return false;">
+<AREA coords="108,372,132,408" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('A scented<br>wax<br>burner.');" onMouseOut="resetText();" onClick="selectingArea(slot_name[3]);return false;" />
+<AREA coords="233,401,8" href="javascript:void(0)" shape="circle" onClick="if(slot_name[2]=='cameracardbatteries'){window.document.cameraon.run();window.document.getElementById('screen_view3d').style.visibility='visible';}else{selectingArea(slot_name[2])};return false;" />
+<AREA coords="209,381,217,381,217,377,225,377,229,381,233,381,240,388,240,404,216,404,209,397" href="javascript:void(0)" shape="POLY" onClick="selectingArea(slot_name[2]);return false;" />
+</MAP>
+<MAP id=”view3d” name="view3d">
+<AREA coords="0,0,577,482" href="javascript:void(0)" shape="RECT" onClick="window.document.cameraoff.run();window.document.getElementById('screen_view3d').style.visibility='hidden';brick_gone=1;return false;" />
+</MAP>
+
+<MAP id=”view4a” name="view4a">
+<AREA coords="326,386,367,402" href="http://www.the-geek.com/forum/index.php?showforum=103" target="top" shape="RECT" onMouseOver="displayText('More<br />Escape<br />Games!');" onMouseOut="resetText();" onClick="alert('You are leaving this site for another.');" />
+</MAP>
+
+<!--I'm adding sound to this game!-->
+<object id="bookclose" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="BookClose.wav" />
+</object>
+
+<object id="brickmove" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="BrickMove.wav" />
+</object>
+
+<object id="cabinetdoor" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="CabinetDoor.wav" />
+</object>
+
+<object id="cameraoff" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="Volume" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="CameraOff.wav" />
+</object>
+
+<object id="cameraon" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="Volume" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="CameraOn.wav" />
+</object>
+
+<object id="candymachine" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="CandyMachine.wav" />
+</object>
+
+<object id="doorclose" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="DoorClose.wav" />
+</object>
+
+<object id="dooropen" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="DoorOpen.wav" />
+</object>
+
+<object id="drawerclose" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="DrawerClose.wav" />
+</object>
+
+<object id="draweropen" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="DrawerOpen.wav" />
+</object>
+
+<object id="dropitem" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="DropItem.wav" />
+</object>
+
+<object id="locked" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="Locked.wav" />
+</object>
+
+<object id="magnetclink" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="MagnetClink.wav" />
+</object>
+
+<object id="matcheslight" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="MatchesLight.wav" />
+</object>
+
+<object id="mousesqueak" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="MouseSqueak.wav" />
+</object>
+
+<object id="nickeldrop" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="NickelDrop.wav" />
+</object>
+
+<object id="recieveitem" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="RecieveItem.wav" />
+</object>
+
+<object id="takeitem" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="TakeItem.wav" />
+</object>
+
+<object id="tapepaper" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="TapePaper.wav" />
+</object>
+
+<object id="unlockdoor" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="UnlockDoor.wav" />
+</object>
+
+<object id="unlockdrawer" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="UnlockDrawer.wav" />
+</object>
+
+<object id="vacuumcleaner" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="VacuumCleaner.wav" />
+</object>
+
+<object id="windowbreak" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="WindowBreak.wav" />
+</object>
+
+<object id="endapplause" height="0" width="0" classid="CLSID:05589FA1-C356-11CE-BF01-00AA0055595A">
+<param name="ShowControls" value="0" />
+<param name="ShowDisplay" value="0" />
+<param name="AutoStart" value="0" />
+<param name="PlayCount" value="1" />
+<param name="AutoRewind" value="-1" />
+<param name="FileName" value="EndApplause.wav" />
+</object>
+
+</body>
+</html>

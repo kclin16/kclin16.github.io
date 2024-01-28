@@ -1,0 +1,52 @@
+@keyframes loading {
+    from {opacity: 100%;}
+    to {opacity: 0%;}
+}
+
+#loading {
+    margin: auto;
+    width: 500px;
+    opacity: 100%;
+    color: #ff0000;
+    text-align: center;
+    font-weight: bold;
+    animation-name: loading;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#progress {
+    border-color: #FFFFFF;
+    border-width: 1px;
+    border-style: solid;
+    width: 500px;
+    margin: auto;
+    visibility: visible;
+}
+
+#bar {
+    background-color: #00AA00;
+    width: 0%;
+    height: 20px;
+}
+
+#controls {
+    color: #FFFFFF;
+    margin: auto;
+    width: 360px;
+    visibility: hidden;
+    text-align: center;
+}
+
+#controls select, input {
+    display: inline;
+    float: none;
+}
+
+#builtwith {
+    font-style: italic;
+    font-size: 10pt;
+    color: #AAAAAA;
+    text-align: center;
+}

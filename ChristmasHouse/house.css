@@ -1,0 +1,56 @@
+.icicles.three {
+    animation-name: three_icicles;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-out;
+}
+
+.icicles.three.A {
+    animation-delay: 0s;
+}
+
+.icicles.three.B {
+    animation-delay: 0.167s;
+}
+
+.icicles.three.C {
+    animation-delay: 0.33s;
+}
+
+@keyframes three_icicles {
+    0%   {opacity: 0;}
+    25%  {opacity: 1;}
+    50%  {opacity: 0;}
+    100% {opacity: 0;}
+}
+
+
+.icicles.four {
+    animation-name: four_icicles;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-out;
+}
+
+.icicles.four.A {
+    animation-delay: 0.125s;
+}
+
+.icicles.four.B {
+    animation-delay: 0.25s;
+}
+
+.icicles.four.C {
+    animation-delay: 0.375s;
+}
+
+.icicles.four.D {
+    animation-delay: 0.5s;
+}
+
+@keyframes four_icicles {
+    0%   {opacity: 0;}
+    25%  {opacity: 1;}
+    50%  {opacity: 0;}
+    100% {opacity: 0;}
+}

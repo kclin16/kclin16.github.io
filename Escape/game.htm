@@ -1,0 +1,591 @@
+﻿<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <meta name="keywords" content="escape,  game,  games,  fun,  puzzle,  challenge,  puzzles,  stadegy">
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <meta http-equiv="Page-Enter" content="blendtrans(duration=2.0)">
+        <title>Esc&auml;p&eacute; (Es-ka-p&aacute;y)</title>
+        <script type="text/javascript" src="game.js">
+</script>
+    </head>
+    <body onload="beginning();" onmouseover="window.status='';return true;" onmousedown="if((event.button==2)||(event.button==3)){alert('Hey!! Don\'t right-click. The\nmenu looks bad on the images! =)');}return false;">
+
+        <!--All the Main Stuff. The Main Image and Inventory Table.-->
+        <div id="heading" style="position:absolute; left:800px; top:17px; z-index:2; visibility:visible;">
+            <table border="0" cellspacing="0" cellpadding="0" height="499">
+                <tr>
+                    <td height="82" width="71">
+                        <center>
+                            <font style="font-size:32px;">
+                                <b>E</b>
+                            </font>
+                        </center>
+                    </td>
+                </tr>
+                <tr>
+                    <td height="82" width="71">
+                        <center>
+                            <font style="font-size:32px;">
+                                <b>s</b>
+                            </font>
+                        </center>
+                    </td>
+                </tr>
+                <tr>
+                    <td height="82" width="71">
+                        <center>
+                            <font style="font-size:32px;">
+                                <b>c</b>
+                            </font>
+                        </center>
+                    </td>
+                </tr>
+                <tr>
+                <td height="82" width="71">
+                    <center>
+                        <font style="font-size:32px;">
+                            <b>&auml;</b>
+                        </font>
+                    </center>
+                </td>
+            </tr>
+            <tr>
+                <td height="82" width="71">
+                    <center>
+                        <font style="font-size:32px;">
+                            <b>p</b>
+                        </font>
+                    </center>
+                </td>
+            </tr>
+            <tr>
+                <td height="82" width="71">
+                    <center>
+                        <font style="font-size:32px;">
+                            <b>&eacute;</b>
+                        </font>
+                    </center>
+                </td>
+            </tr>
+        </table>
+        </div>
+
+        <!--Each screen in a div-->
+        <span style="cursor: pointer">
+            <div id="screen_view0a" style="position:absolute; left:10px; top:10px; z-index:1; visibility:visible;">
+                <img src="view0a.gif" border="0" isMap useMap="#view0a">
+            </div>
+            <div id="screen_view0b" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+                <img src="view0b.gif" border="0" isMap useMap="#view0b">
+            </div>
+            <div id="screen_view0c" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+                <img src="view0c.gif" border="0" isMap useMap="#view0c">
+            </div>
+
+            <div id="screen_view1a" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+                <img src="view1a.gif" border="0" isMap useMap="#view1a">
+            </div>
+            <div id="screen_view1b" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+                <img src="view1b.gif" border="0" isMap useMap="#view1b">
+            </div>
+
+            <div id="screen_view2a" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+                <img src="view2a.gif" border="0" isMap useMap="#view2a">
+            </div>
+            <div id="screen_view2b" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+                <img src="view2b.gif" border="0" isMap useMap="#view2b">
+            </div>
+
+            <div id="screen_view3a" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+                <img src="view3a.gif" border="0" isMap useMap="#view3a">
+            </div>
+            <div id="screen_view3b" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+                <img src="view3b.gif" border="0" isMap useMap="#view3b">
+            </div>
+            <div id="screen_view3c" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+                <img src="view3c.gif" border="0" isMap useMap="#view3c">
+            </div>
+            <div id="screen_view3d" style="position:absolute; left:10px; top:10px; z-index:4; visibility:hidden;">
+                <img src="view3d.gif" border="0" isMap useMap="#view3d">
+            </div>
+
+            <div id="screen_view4a" style="position:absolute; left:10px; top:10px; z-index:1; visibility:hidden;">
+                <img src="view4a.gif" border="0" isMap useMap="#view4a">
+            </div>
+        </span>
+
+        <div id="controls" style="position:absolute; left:10px; top:495px; z-index:1; visibility:visible;">
+            <form id="help">
+                <input type="button" id="game_controls" name="game_controls" value="Game Controls" onClick="alert('Click on a side wall to see that wall.\nClick on objects to pick them up.\nCombine objects in inventory by clicking them in sequence.\nBasically, click anywhere to see if anything happens.');">
+            </form>
+        </div>
+
+        <div id="goptions" style="position:absolute; left:450px; top:490px; z-index:1; cursor:pointer; visibility:visible;">
+            <form id="game_options">
+                <input type="checkbox" id="helper" name="helper" checked="checked" onClick="if(this.checked){helper_option=true;}else{helper_option=false;}">
+    <font style="font-size:15px;">Item Descriptions&nbsp;</font>
+            </form>
+        </div>
+
+        <div id="spoiler" style="position:absolute; left:589px; top:514px; z-index:1; cursor:pointer; visibility:visible;">
+            <center>
+            <a href="javascript:void(0)" onClick="window.open('ErnDescription.htm', 'wax_ern', 'width=510, height=490, resizable, dependant');">
+                <font color="#9900CC" style="font-size:15px;">
+                    <b>A Description of the Purple Thing</b>
+                </font>
+            </a>
+            <br>
+            </center>
+        </div>
+
+        <!--Inventory Table Right Here.-->
+        <div id="inventory_table" style="position:absolute; left:588px; top:10px; z-index:1; visibility:visible; cursor:pointer;">
+            <table border="1" cellspacing="0" cellpadding="0" height="499" bgcolor="white">
+                <tr>
+                    <td height="82" width="71" id="batteriescell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['batteries']>0)){displayText('Batteries.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['batteries']==4){selectingItem('batteries', 'batteries');}return false;">
+                                <img src="iblank0.gif" border="0" id="batteries" name="batteries">
+                            </a>
+                        </center>
+                    </td>
+                    <td height="82" width="71" id="candlecell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['candle']>0)){displayText('A fat<br>Candle.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['candle']==1){selectingItem('candle', 'candle');}return false;">
+                                <img src="iblank0.gif" border="0" id="candle" name="candle">
+                            </a>
+                        </center>
+                    </td>
+                    <td height="82" width="71" id="cardcell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['card']>0)){displayText('A<br>memory<br>card.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['card']==1){selectingItem('card', 'card');}return false;">
+                                <img src="iblank0.gif" border="0" id="card" name="card">
+                            </a>
+                        </center>
+                    </td>
+                </tr>
+                <tr>
+                    <td height="82" width="71" id="cheesecell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['cheese']>0)){displayText('A swiss<br>cheese<br>wedge.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['cheese']==1){selectingItem('cheese', 'cheese');}return false;">
+                                <img src="iblank0.gif" border="0" id="cheese" name="cheese">
+                            </a>
+                        </center>
+                    </td>
+                    <td height="82" width="71" id="cordcell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['cord']>0)){displayText('A<br>power<br>cord.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['cord']==1){selectingItem('cord', 'cord');}return false;">
+                                <img src="iblank0.gif" border="0" id="cord" name="cord">
+                            </a>
+                        </center>
+                    </td>
+                    <td height="82" width="71" id="drawerkeycell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['drawerkey']>0)){displayText('A<br>silver<br>key.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['drawerkey']==1){selectingItem('drawerkey', 'drawerkey');}return false;">
+                                <img src="iblank0.gif" border="0" id="drawerkey" name="drawerkey">
+                            </a>
+                        </center>
+                    </td>
+                </tr>
+                <tr>
+                    <td height="82" width="71" id="dresserkeycell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['dresserkey']>0)){displayText('A gold<br>key.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['dresserkey']==1){selectingItem('dresserkey', 'dresserkey');}return false;">
+                                <img src="iblank0.gif" border="0" id="dresserkey" name="dresserkey">
+                            </a>
+                        </center>
+                    </td>
+                    <td height="82" width="71" id="hairpincell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['hairpin']>0)){displayText('A<br>hairpin.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['hairpin']==1){selectingItem('hairpin', 'hairpin');}return false;">
+                                <img src="iblank0.gif" border="0" id="hairpin" name="hairpin">
+                            </a>
+                        </center>
+                    </td>
+                    <td height="82" width="71" id="magnetcell" style="filter:alpha(Opacity=100);background:white">
+                        <center>        
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['magnet']>0)){displayText('A<br>magnet.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['magnet']==1){selectingItem(slot_name[0], 'magnet');}return false;">
+                                <img src="iblank0.gif" border="0" id="magnet" name="magnet">
+                            </a>
+                        </center>
+                    </td>
+                </tr>
+                <tr>
+                    <td height="82" width="71" id="matchescell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['matches']>0)){displayText('A book<br>of<br>matches.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['matches']==1){selectingItem('matches', 'matches');}return false;">
+                                <img src="iblank0.gif" border="0" id="matches" name="matches">
+                            </a>
+                        </center>
+                    </td>
+                    <td height="82" width="71" id="nickelcell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['nickel']>0)){displayText('A U.S.<br>nickel.<br>($0.05)');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['nickel']==1){selectingItem('nickel', 'nickel');}return false;">
+                                <img src="iblank0.gif" border="0" id="nickel" name="nickel">
+                            </a>
+                        </center>
+                    </td>
+                    <td height="82" width="71" id="papercell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['paper']>0)){displayText('Paper.');}window.status='';return true;" onMouseOut="resetText();" onClick="if((inventory['paper']==1)&&(slot_name[4]!='papertape')){selectingItem('paper', 'paper');}if((inventory['paper']==1)&&(slot_name[4]=='papertape')){window.open('credits.htm', 'CREDITS', 'width=320, height=350, dependant, scrollbars, resizable');}return false;">
+                                <img src="iblank0.gif" border="0" id="paper" name="paper">
+                            </a>
+                        </center>
+                    </td>
+                </tr>
+                <tr>
+                    <td height="82" width="71" id="sockcell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['sock']>0)){displayText('A clean<br>sock.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['sock']==1){selectingItem('sock', 'sock');}return false;">
+                                <img src="iblank0.gif" border="0" id="sock" name="sock">
+                            </a>
+                        </center>
+                    </td>
+                    <td height="82" width="71" id="stringcell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['string']>0)){displayText('A spool<br>of<br>thread.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['string']==1){selectingItem('string', 'string');}return false;">
+                                <img src="iblank0.gif" border="0" id="string" name="string">
+                            </a>
+                        </center>
+                    </td>
+                    <td height="82" width="71" id="tapecell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['tape']>0)){displayText('Tape.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['tape']==1){selectingItem('tape', 'tape');}return false;">
+                                <img src="iblank0.gif" border="0" id="tape" name="tape">
+                            </a>
+                        </center>
+                    </td>
+                </tr>
+                <tr>
+                    <td height="82" width="71" id="tongscell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['tongs']>0)){displayText('Tongs.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['tongs']==1){selectingItem('tongs', 'tongs');}return false;">
+                                <img src="iblank0.gif" border="0" id="tongs" name="tongs">
+                            </a>
+                        </center>
+                    </td>
+                    <td height="82" width="71" id="vacuumcell" style="filter:alpha(Opacity=100);background:white">
+                        <center>
+                            <a href="javascript:void(0)" onMouseOver="if((helper_option)&&(inventory['vacuum']>0)){displayText('A<br>vacuum<br>cleaner.');}window.status='';return true;" onMouseOut="resetText();" onClick="if(inventory['vacuum']==1){selectingItem(slot_name[1], 'vacuum');}return false;">
+                                <img src="iblank0.gif" border="0" id="vacuum" name="vacuum">
+                            </a>
+                        </center>
+                    </td>
+                    <td height="82" width="71">
+                        <center>
+                            <font style="font-size:15px;" id="display">&nbsp;</font>
+                        </center>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!--All the divs...-->
+        <div id="dbrick0" style="position:absolute; left:143px; top:454px; z-index:3; visibility:visible">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="if(brick_gone==1){document.getElementById('brickmove').play();brickHide();show_screen[0]='1:dbrick0';}return false;">
+                <img src="dbrick0.gif" border="0">
+            </a>
+        </div>
+        <div id="dhairpin0" style="position:absolute; left:153px; top:454px; z-index:2; visibility:visible">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dhairpin0', 'hairpin', ihairpin0);return false;">
+                <img src="dhairpin0.gif" border="0">
+            </a>
+        </div>
+        <div id="dmatches0" style="position:absolute; left:262px; top:440px; z-index:2; visibility:hidden">
+            <a href="javascript:void(0)" onMouseOver="displayText('Look at\nwhat the\nmouse left.');window.status='';return true;" onMouseOut="resetText();" onClick="takeItem('dmatches0', 'matches', imatches0);return false;">
+                <img src="dmatches0.gif" border="0">
+            </a>
+        </div>
+        <div id="dsock0" style="position:absolute; left:390px; top:403px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dsock0', 'sock', isock0);return false;">
+                <img src="dsock0.gif" border="0">
+            </a>
+        </div>
+        <div id="ddresser0" style="position:absolute; left:346px; top:411px; z-index:3; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="document.getElementById('drawerclose').play();rotateView('screen_view0a', 'screen_view0b', view0b_divs, view0a_divs);return false;">
+                <img src="ddresser0.gif" border="0">
+            </a>
+        </div>
+
+        <div id="dmagnet0" style="position:absolute; left:133px; top:397px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dmagnet0', 'magnet', imagnet0);return false;">
+                <img src="dmagnet0.gif" border="0">
+            </a>
+        </div>
+        <div id="ddrawerkey0" style="position:absolute; left:150px; top:370px; z-index:2; visibility:hidden">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('ddrawerkey0', 'drawerkey', idrawerkey0);return false;">
+                <img src="ddrawerkey0.gif" border="0">
+            </a>
+        </div>
+        <div id="dnickel0" style="position:absolute; left:357px; top:197px; z-index:2; visibility:hidden">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dnickel0', 'nickel', inickel0);return false;">
+                <img src="dnickel0.gif" border="0">
+            </a>
+        </div>
+
+        <div id="dcord0" style="position:absolute; left:361px; top:420px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dcord0', 'cord', icord0);return false;">
+                <img src="dcord0.gif" border="0">
+            </a>
+        </div>
+        <div id="dshredder0" style="position:absolute; left:214px; top:394px; z-index:3; visibility:hidden;">
+            <span style="cursor: pointer">
+                <img src="dshredder0.gif" border="0">
+            </span>
+        </div>
+        <div id="dpaper0" style="position:absolute; left:216px; top:386px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dpaper0', 'paper', ipaper0);return false;">
+                <img src="dpaper0.gif" border="0">
+            </a>
+        </div>
+        <div id="dtape0" style="position:absolute; left:360px; top:380px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dtape0', 'tape', itape0);return false;">
+                <img src="dtape0.gif" border="0">
+            </a>
+        </div>
+        <div id="dbattery0a" style="position:absolute; left:150px; top:270px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dbattery0a', 'batteries', ibattery0);return false;">
+                <img src="dbattery0.gif" border="0">
+            </a>
+        </div>
+        <div id="dvacuum0" style="position:absolute; left:120px; top:370px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dvacuum0', 'vacuum', ivacuum0);return false;">
+                <img src="dvacuum0.gif" border="0">
+            </a>
+        </div>
+
+        <div id="dtongs0" style="position:absolute; left:197px; top:345px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dtongs0', 'tongs', itongs0);return false;">
+                <img src="dtongs0.gif" border="0">
+            </a>
+        </div>
+        <div id="dstring0" style="position:absolute; left:330px; top:257px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dstring0', 'string', istring0);return false;">
+                <img src="dstring0.gif" border="0">
+            </a>
+        </div>
+        <div id="dcandle0a" style="position:absolute; left:360px; top:257px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dcandle0a', 'candle', icandle0);return false;">
+                <img src="dcandle0.gif" border="0">
+            </a>
+        </div>
+        <div id="dbattery0b" style="position:absolute; left:350px; top:427px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dbattery0b', 'batteries', ibattery0);return false;">
+                <img src="dbattery0.gif" border="0">
+            </a>
+        </div>
+        <div id="dcheese0" style="position:absolute; left:362px; top:415px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="takeItem('dcheese0', 'cheese', icheese0);return false;">
+                <img src="dcheese0.gif" border="0">
+            </a>
+        </div>
+        <div id="dcandle1" style="position:absolute; left:127px; top:399px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="selectingArea(slot_name[3]);return false;">
+                <img src="dcandle1.gif" border="0">
+            </a>
+        </div>
+        <div id="dcandle0b" style="position:absolute; left:127px; top:399px; z-index:2; visibility:hidden;">
+            <a href="javascript:void(0)" onMouseOver="window.status='';return true;" onClick="selectingArea(slot_name[3]);return false;">
+                <img src="dcandle0.gif" border="0">
+            </a>
+        </div>
+
+        <!--All the Image Maps-->
+        <MAP id="view0a" name="view0a">
+            <AREA coords="0, 0, 48, 48, 48, 433, 0, 481" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view1a', 'screen_view0a', view0a_divs, view1a_divs);return false;">
+            <AREA coords="577, 0, 577, 481, 529, 433, 529, 48" href="javascript:void(0)" shape="POLY" onClick="if(slot_name[3]=='ern'){rotateView('screen_view3a', 'screen_view0a', view0a_divs, view3a_divs);}else{rotateView('screen_view3a', 'screen_view0a', view0a_divs, view3a_divs);}return false;">
+            <AREA coords="61, 180, 181, 432" href="javascript:void(0)" shape="RECT" onClick="if(lock_view0c==1){document.getElementById('dooropen').play();rotateView('screen_view0c', 'screen_view0a', view0a_divs, view0c_divs);}else{document.getElementById('locked').play();selectingArea('door');}return false;">
+            <AREA coords="250, 189, 459, 315" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('Bunny!');" onMouseOut="resetText();">
+            <AREA coords="313, 388, 433, 412" href="javascript:void(0)" shape="RECT" onClick="if(lock_view0b==1){document.getElementById('draweropen').play();rotateView('screen_view0b', 'screen_view0a', view0a_divs, view0b_divs);}else{document.getElementById('locked').play();selectingArea('dresser');}return false;">
+            <AREA coords="252, 420, 276, 432" href="javascript:void(0)" shape="RECT" onClick="selectingArea('mousehole');return false;">
+            <AREA coords="313, 444, 432, 456" href="javascript:void(0)" shape="RECT" onClick="selectingArea('udresser');return false;">
+        </MAP>
+        <MAP id="view0b" name="view0b">
+            <AREA coords="0, 0, 48, 48, 48, 433, 0, 481" href="javascript:void(0)" shape="POLY" onClick="document.getElementById('drawerclose').play();rotateView('screen_view1a', 'screen_view0b', view0b_divs, view1a_divs);return false;">
+            <AREA coords="577, 0, 577, 481, 529, 433, 529, 48" href="javascript:void(0)" shape="POLY" onClick="document.getElementById('drawerclose').play();if(slot_name[3]=='ern'){rotateView('screen_view3a', 'screen_view0b', view0b_divs, view3a_divs);}else{rotateView('screen_view3a', 'screen_view0b', view0b_divs, view3a_divs);}return false;">
+            <AREA coords="61, 180, 181, 432" href="javascript:void(0)" shape="RECT" onClick="if(lock_view0c==1){document.getElementById('drawerclose').play();document.getElementById('dooropen').play();rotateView('screen_view0c', 'screen_view0b', view0b_divs, view0c_divs);}else{document.getElementById('locked').play();selectingArea('door');}return false;">
+            <AREA coords="250, 189, 459, 315" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('Bunny!');" onMouseOut="resetText();">
+            <AREA coords="252, 420, 276, 432" href="javascript:void(0)" shape="RECT" onClick="selectingArea('mousehole');return false;">
+            <AREA coords="313, 444, 432, 456" href="javascript:void(0)" shape="RECT" onClick="selectingArea('udresser');return false;">
+        </MAP>
+        <MAP id="view0c" name="view0c">
+            <AREA coords="0, 0, 48, 48, 48, 433, 0, 481" href="javascript:void(0)" shape="POLY" onClick="document.getElementById('doorclose').play();rotateView('screen_view1a', 'screen_view0c', view0c_divs, view1a_divs);return false;">
+            <AREA coords="577, 0, 577, 481, 529, 433, 529, 48" href="javascript:void(0)" shape="POLY" onClick="document.getElementById('doorclose').play();if(slot_name[3]=='ern'){rotateView('screen_view3a', 'screen_view0c', view0c_divs, view3a_divs);}else{rotateView('screen_view3a', 'screen_view0c', view0c_divs, view3a_divs);}return false;">
+            <AREA coords="61, 180, 181, 432" href="javascript:void(0)" shape="RECT" onClick="document.getElementById('endapplause').play();rotateView('screen_view4a', 'screen_view0c', view0c_divs, view4a_divs);return false;">
+            <AREA coords="250, 189, 459, 315" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('Bunny!');" onMouseOut="resetText();">
+            <AREA coords="313, 388, 433, 412" href="javascript:void(0)" shape="RECT" onClick="if(lock_view0b==1){document.getElementById('doorclose').play();document.getElementById('draweropen').play();rotateView('screen_view0b', 'screen_view0c', view0c_divs, view0b_divs);}return false;">
+            <AREA coords="252, 420, 276, 432" href="javascript:void(0)" shape="RECT" onClick="return false;">
+            <AREA coords="313, 444, 432, 456" href="javascript:void(0)" shape="RECT" onClick="return false;">
+        </MAP>
+
+        <MAP id="view1a" name="view1a">
+            <AREA coords="0, 0, 48, 48, 48, 433, 0, 481" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view2a', 'screen_view1a', view1a_divs, view2a_divs);return false;">
+            <AREA coords="577, 0, 577, 481, 528, 432, 528, 49" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view0a', 'screen_view1a', view1a_divs, view0a_divs);return false;">
+            <AREA coords="300, 276, 312, 312" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('Any<br>hollow<br>books?');" onMouseOut="resetText();" onClick="if(battery_given==0){document.getElementById('bookclose').play();battery_given=1;giveItem('batteries', ibattery0);}return false;">
+            <AREA coords="252, 204, 348, 432" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('Any<br>hollow<br>books?');" onMouseOut="resetText();" onClick="return false;">
+            <AREA coords="345, 168, 351, 168, 357, 171, 360, 171, 365, 177, 365, 184, 355, 184, 355, 189, 350, 189, 350, 186, 346, 186, 346, 189, 341, 189, 341, 184, 336, 179, 336, 176" href="javascript:void(0)" shape="POLY" onClick="if(nickel_drop==0){nickel_drop=1;document.getElementById('nickeldrop').play();showItem('dnickel0');show_screen[7]='0:dnickel0';}return false;">
+            <AREA coords="140, 313, 152, 313, 158, 318, 158, 348, 160, 350, 160, 360, 148, 370, 144, 370, 132, 360, 132, 350, 134, 348, 134, 318, " href="javascript:void(0)" shape="POLY" onClick="selectingArea('machine');return false;">
+            <AREA coords="119, 379, 155, 403" href="javascript:void(0)" shape="RECT" onClick="if(lock_view1b==1){document.getElementById('draweropen').play();rotateView('screen_view1b', 'screen_view1a', view1a_divs, view1b_divs);}else{document.getElementById('locked').play();selectingArea('drawer');}return false;">
+        </MAP>
+        <MAP id="view1b" name="view1b">
+            <AREA coords="0, 0, 48, 48, 48, 433, 0, 481" href="javascript:void(0)" shape="POLY" onClick="document.getElementById('drawerclose').play();rotateView('screen_view2a', 'screen_view1b', view1b_divs, view2a_divs);return false;">
+            <AREA coords="577, 0, 577, 481, 528, 432, 528, 49" href="javascript:void(0)" shape="POLY" onClick="document.getElementById('drawerclose').play();rotateView('screen_view0a', 'screen_view1b', view1b_divs, view0a_divs);return false;">
+            <AREA coords="300, 276, 312, 312" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('Any<br>hollow<br>books?');" onMouseOut="resetText();" onClick="if(battery_given==0){document.getElementById('bookclose').play();battery_given=1;giveItem('batteries', ibattery0);}return false;">
+            <AREA coords="252, 204, 348, 432" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('Any<br>hollow<br>books?');" onMouseOut="resetText();" onClick="return false;">
+            <AREA coords="345, 168, 351, 168, 357, 171, 360, 171, 365, 177, 365, 184, 355, 184, 355, 189, 350, 189, 350, 186, 346, 186, 346, 189, 341, 189, 341, 184, 336, 179, 336, 176" href="javascript:void(0)" shape="POLY" onClick="return false;">
+            <AREA coords="140, 313, 152, 313, 158, 318, 158, 348, 160, 350, 160, 360, 148, 370, 144, 370, 132, 360, 132, 350, 134, 348, 134, 318, " href="javascript:void(0)" shape="POLY" onClick="return false;">
+            <AREA coords="107, 403, 143, 427" href="javascript:void(0)" shape="RECT" onClick="document.getElementById('drawerclose').play();rotateView('screen_view1a', 'screen_view1b', view1b_divs, view1a_divs);return false;">
+        </MAP>
+
+        <MAP id="view2a" name="view2a">
+            <AREA coords="0, 0, 48, 48, 48, 433, 0, 481" href="javascript:void(0)" shape="POLY" onClick="if(slot_name[3]=='ern'){rotateView('screen_view3a', 'screen_view2a', view2a_divs, view3a_divs);}else{rotateView('screen_view3a', 'screen_view2a', view2a_divs, view3a_divs);}return false;">
+            <AREA coords="577, 0, 577, 481, 529, 433, 529, 48" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view1a', 'screen_view2a', view2a_divs, view1a_divs);return false;">
+            <AREA coords="72, 180, 192, 432" href="javascript:void(0)" shape="RECT" onClick="document.getElementById('dooropen').play();rotateView('screen_view2b', 'screen_view2a', view2a_divs, view2b_divs);return false;">
+            <AREA coords="287, 251, 422, 314" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('Must<br>get out!');" onMouseOut="resetText();">
+        </MAP>
+        <MAP id="view2b" name="view2b">
+            <AREA coords="72, 180, 72, 432, 12, 481, 12, 229" href="javascript:void(0)" shape="POLY" onClick="document.getElementById('doorclose').play();rotateView('screen_view2a', 'screen_view2b', view2b_divs, view2a_divs);return false;">
+            <AREA coords="0, 0, 48, 48, 48, 433, 0, 481" href="javascript:void(0)" shape="POLY" onClick="document.getElementById('doorclose').play();if(slot_name[3]=='ern'){rotateView('screen_view3a', 'screen_view2b', view2b_divs, view3a_divs);}else{rotateView('screen_view3a', 'screen_view2b', view2b_divs, view3a_divs);}return false;">
+            <AREA coords="577, 0, 577, 481, 529, 433, 529, 48" href="javascript:void(0)" shape="POLY" alt="Rotate Right" onClick="document.getElementById('doorclose').play();rotateView('screen_view1a', 'screen_view2b', view2b_divs, view1a_divs);return false;">
+            <AREA coords="287, 251, 422, 314" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('Must<br>get out!');" onMouseOut="resetText();">
+        </MAP>
+
+        <MAP id="view3a" name="view3a">
+            <AREA coords="0, 0, 48, 48, 48, 433, 0, 481" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view0a', 'screen_view3a', view3a_divs, view0a_divs);return false;">
+            <AREA coords="577, 0, 577, 481, 528, 432, 528, 49" href="javascript:void(0)" shape="POLY" onClick="rotateView('screen_view2a', 'screen_view3a', view3a_divs, view2a_divs);return false;">
+            <AREA coords="300, 192, 396, 312" href="javascript:void(0)" shape="RECT" onClick="document.getElementById('cabinetdoor').pause();document.getElementById('cabinetdoor').play();if(slot_name[3]=='ern'){rotateView('screen_view3c', 'screen_view3a', view3a_divs, view3c_divs);}else{rotateView('screen_view3c', 'screen_view3a', view3a_divs, view3c_divs);}return false;">
+            <AREA coords="336, 384, 385, 445" href="javascript:void(0)" shape="RECT" onClick="document.getElementById('fridgedooropen').pause();document.getElementById('fridgedooropen').play();rotateView('screen_view3b', 'screen_view3a', view3a_divs, view3b_divs);return false;">
+            <AREA coords="420, 437, 456, 437, 468, 449, 432, 449" href="javascript:void(0)" shape="POLY" onClick="selectingArea('grate');return false;">
+            <AREA coords="108, 372, 132, 408" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('A scented<br>wax<br>burner.');" onMouseOut="resetText();" onClick="selectingArea(slot_name[3]);return false;">
+            <AREA coords="233, 401, 8" href="javascript:void(0)" shape="circle" onClick="if(slot_name[2]=='cameracardbatteries'){document.getElementById('cameraon').play();document.getElementById('screen_view3d').style.visibility='visible';}else{selectingArea(slot_name[2])};return false;">
+            <AREA coords="209, 381, 217, 381, 217, 377, 225, 377, 229, 381, 233, 381, 240, 388, 240, 404, 216, 404, 209, 397" href="javascript:void(0)" shape="POLY" onClick="selectingArea(slot_name[2]);return false;">
+        </MAP>
+        <MAP id="view3b" name="view3b">
+            <AREA coords="0, 0, 48, 48, 48, 433, 0, 481" href="javascript:void(0)" shape="POLY" onClick="document.getElementById('fridgedoorclose').play();rotateView('screen_view0a', 'screen_view3b', view3b_divs, view0a_divs);return false;">
+            <AREA coords="577, 0, 577, 481, 528, 432, 528, 49" href="javascript:void(0)" shape="POLY" onClick="document.getElementById('fridgedoorclose').play();rotateView('screen_view2a', 'screen_view3b', view3b_divs, view2a_divs);return false;">
+            <AREA coords="300, 192, 396, 312" href="javascript:void(0)" shape="RECT" onClick="document.getElementById('fridgedoorclose').pause();document.getElementById('fridgedoorclose').play();document.getElementById('cabinetdoor').pause();document.getElementById('cabinetdoor').play();if(slot_name[3]=='ern'){rotateView('screen_view3c', 'screen_view3b', view3b_divs, view3c_divs);}else{rotateView('screen_view3c', 'screen_view3b', view3b_divs, view3c_divs);}return false;">
+            <AREA coords="288, 384, 336, 445" href="javascript:void(0)" shape="RECT" onClick="document.getElementById('fridgedooropen').pause();document.getElementById('fridgedooropen').play();rotateView('screen_view3a', 'screen_view3b', view3b_divs, view3a_divs);return false;">
+            <AREA coords="420, 437, 456, 437, 468, 449, 432, 449" href="javascript:void(0)" shape="POLY" onClick="selectingArea('grate');return false;">
+            <AREA coords="108, 372, 132, 408" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('A scented<br>wax<br>burner.');" onMouseOut="resetText();" onClick="selectingArea(slot_name[3]);return false;">
+            <AREA coords="233, 401, 8" href="javascript:void(0)" shape="circle" onClick="if(slot_name[2]=='cameracardbatteries'){document.getElementById('cameraon').play();document.getElementById('screen_view3d').style.visibility='visible';}else{selectingArea(slot_name[2])};return false;">
+            <AREA coords="209, 381, 217, 381, 217, 377, 225, 377, 229, 381, 233, 381, 240, 388, 240, 404, 216, 404, 209, 397" href="javascript:void(0)" shape="POLY" onClick="selectingArea(slot_name[2]);return false;">
+        </MAP>
+            <MAP id="view3c" name="view3c">
+            <AREA coords="0, 0, 48, 48, 48, 433, 0, 481" href="javascript:void(0)" shape="POLY" onClick="document.getElementById('cabinetdoor').pause();document.getElementById('cabinetdoor').play();rotateView('screen_view0a', 'screen_view3c', view3c_divs, view0a_divs);return false;">
+            <AREA coords="577, 0, 577, 481, 528, 432, 528, 49" href="javascript:void(0)" shape="POLY" onClick="document.getElementById('cabinetdoor').pause();document.getElementById('cabinetdoor').play();rotateView('screen_view2a', 'screen_view3c', view3c_divs, view2a_divs);return false;">
+            <AREA coords="204, 192, 300, 312" href="javascript:void(0)" shape="RECT" onClick="document.getElementById('cabinetdoor').pause();document.getElementById('cabinetdoor').play();if(slot_name[3]=='ern'){rotateView('screen_view3a', 'screen_view3c', view3c_divs, view3a_divs);}else{rotateView('screen_view3a', 'screen_view3c', view3c_divs, view3a_divs);}return false;">
+            <AREA coords="336, 384, 385, 445" href="javascript:void(0)" shape="RECT" onClick="document.getElementById('fridgedooropen').pause();document.getElementById('fridgedooropen').play();document.getElementById('cabinetdoor').pause();document.getElementById('cabinetdoor').play();if(slot_name[3]=='ern'){rotateView('screen_view3b', 'screen_view3c', view3c_divs, view3b_divs);}else{rotateView('screen_view3b', 'screen_view3c', view3c_divs, view3b_divs);}return false;">
+            <AREA coords="420, 437, 456, 437, 468, 449, 432, 449" href="javascript:void(0)" shape="POLY" onClick="selectingArea('grate');return false;">
+            <AREA coords="108, 372, 132, 408" href="javascript:void(0)" shape="RECT" onMouseOver="displayText('A scented<br>wax<br>burner.');" onMouseOut="resetText();" onClick="selectingArea(slot_name[3]);return false;">
+            <AREA coords="233, 401, 8" href="javascript:void(0)" shape="circle" onClick="if(slot_name[2]=='cameracardbatteries'){document.getElementById('cameraon').play();document.getElementById('screen_view3d').style.visibility='visible';}else{selectingArea(slot_name[2])};return false;">
+            <AREA coords="209, 381, 217, 381, 217, 377, 225, 377, 229, 381, 233, 381, 240, 388, 240, 404, 216, 404, 209, 397" href="javascript:void(0)" shape="POLY" onClick="selectingArea(slot_name[2]);return false;">
+        </MAP>
+        <MAP id="view3d" name="view3d">
+            <AREA coords="0, 0, 577, 482" href="javascript:void(0)" shape="RECT" onClick="document.getElementById('cameraoff').play();document.getElementById('screen_view3d').style.visibility='hidden';brick_gone=1;return false;">
+        </MAP>
+
+        <!--Audio-->
+        <audio id="bookclose" preload="auto">
+            <source src="BookClose.wav" type="audio/wav">
+        </audio>
+
+        <audio id="brickmove">
+            <source src="BrickMove.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="cabinetdoor">
+            <source src="CabinetDoor.wav" type="audio/wav">
+        </audio>
+
+        <audio id="fridgedooropen">
+            <source src="FridgeDoorOpen.wav" type="audio/wav">
+        </audio>
+
+        <audio id="fridgedoorclose">
+            <source src="FridgeDoorClose.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="cameraoff">
+            <source src="CameraOff.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="cameraon">
+            <source src="CameraOn.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="candymachine">
+            <source src="CandyMachine.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="doorclose">
+            <source src="DoorClose.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="dooropen">
+            <source src="DoorOpen.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="drawerclose">
+            <source src="DrawerClose.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="draweropen">
+            <source src="DrawerOpen.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="dropitem">
+            <source src="DropItem.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="locked">
+            <source src="Locked.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="magnetclink">
+            <source src="MagnetClink.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="matcheslight">
+            <source src="MatchesLight.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="mousesqueak">
+            <source src="MouseSqueak.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="nickeldrop">
+            <source src="NickelDrop.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="recieveitem">
+            <source src="RecieveItem.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="takeitem">
+            <source src="TakeItem.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="tapepaper">
+            <source src="TapePaper.wav" type="audio/wav">
+        </audio>
+
+        <audio id="unlockdoor">
+            <source src="UnlockDoor.wav" type="audio/wav">
+        </audio>
+
+        <audio id="unlockdrawer">
+            <source src="UnlockDrawer.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="vacuumcleaner">
+            <source src="VacuumCleaner.wav" type="audio/wav">
+        </audio>
+        
+        <audio id="endapplause">
+            <source src="Escape.wav" type="audio/wav">
+        </audio>
+
+    </body>
+</html>
