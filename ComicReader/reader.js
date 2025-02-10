@@ -15,6 +15,7 @@
 [ ] NTH: Can carousel size be draggable?
 [ ] NTH: Can carousel have better response time?
 [ ] NTH: Can I unzip the EPUB with the production verison of zip.js instead of the debug version?
+[ ] NTH: Other ebook formats?
 [ ] Basic help pane & zip.js license credit
 [ ] Save direction, shift, and page location settings per comic book.
 [ ] Save the other settings globally.
