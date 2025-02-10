@@ -1,0 +1,91 @@
+body {
+    overflow: hidden;
+}
+
+#controls {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: #87cefa;
+}
+
+#top-bar {
+    margin: 5px;
+    margin-bottom: 10px;
+}
+
+/* 1vw is 1% viewport width. Seems counter-intuitive. */
+.bg {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    top: 0vh;
+    left: 0vw;
+    width: 100vw;
+}
+
+.page {
+    height: 100vh;
+}
+
+#summon_controls {
+    display: block;
+    position: absolute;
+    top: 0vh;
+    left: 0vw;
+    height: 25vh;
+    width: 100vw;
+    opacity: 25%;
+}
+
+.page_flip {
+    display: block;
+    position: absolute;
+    top: 25vh;
+    height: 75vh;
+    width: 50vw;
+    opacity: 25%;
+}
+
+#flip_left {
+    left: 0vw;
+}
+
+#flip_right {
+    left: 50vw;
+}
+
+#carousel {
+    width: 100vw;
+    overflow: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.horse {
+    display: flex;
+    flex-direction: row;
+    margin-left: 5px;
+    margin-right: 5px;
+    height: 200px;
+}
+
+.thumbnail {
+    height: 200px;
+}
+
+#spacing {
+    width: 40px;
+}
+
+#close {
+    float: right;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 14pt;
+}
+
+label {
+    margin-right: 20px;
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Comic Reader
+        </title>
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="reader.css">
+    </head>
+    <body>
+        <div id="cover_bg" class="bg">
+            <img id="page_cover" class="page">
+        </div>
+        <div id="pages_bg" class="bg">
+            <img id="page_left" class="page">
+            <img id="page_right" class="page">
+        </div>
+        <div id="summon_controls"></div>
+        <div id="flip_left" class="page_flip"></div>
+        <div id="flip_right" class="page_flip"></div>
+        <div id="controls">
+            <div id="top-bar">
+                <input type="file" id="open_control" accept="application/epub+zip">
+                <input type="checkbox" id="rtl" name="rtl" checked>
+                <label for="rtl">Right-to-Left</label>
+                <input type="checkbox" id="shift" name="shift">
+                <label for="shift">Shift Pages</label>
+                <input type="number" id="spacing" name="spacing" min="0" max="50" step="1" value="0">
+                <label for="spacing">Gap Between Pages</label>
+                <input type="color" id="background" name="background" value="#000000">
+                <label for="background">Background Color</label>
+                <progress id="progress" value="0" max="100" style="visibility: hidden;">0%</progress>
+                <input type="button" id="close" value="X">
+            </div>
+            <div id="carousel"></div>
+        </div>
+    </body>
+    <script type="text/javascript" src="zip.js"></script>
+    <script type="text/javascript" src="reader.js"></script>
+</html>
