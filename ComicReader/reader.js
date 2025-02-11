@@ -10,8 +10,8 @@
 [x] page spacing control
 [x] Set background color
 [ ] Fix all BUG
-[ ] Set border around page_loc on carousel
-[ ] Scroll Carousel to page_loc
+[x] Set border around page_loc on carousel
+[ ] Scroll Carousel to page_loc WHEN MENU OPENS
 [ ] NTH: Can carousel size be draggable?
 [ ] NTH: Can carousel have better response time?
 [ ] NTH: Can I unzip the EPUB with the production verison of zip.js instead of the debug version?
@@ -96,6 +96,7 @@ function hide_controls(){
     controls.style.visibility = 'hidden';
 }
 
+// BUG Carousel scrollbars respond to arrow keys.
 function check_key(e){
     if(e.code === 'ArrowLeft'){
         flip_left_page();
@@ -166,7 +167,7 @@ async function load_book(){
 }
 
 function flip_left_page(){
-    hide_controls();
+    //hide_controls();
     if(page_loc === 0 && is_rtl){
         page_loc = 1;
     }
@@ -178,7 +179,7 @@ function flip_left_page(){
 }
 
 function flip_right_page(){
-    hide_controls();
+    //hide_controls();
     if(page_loc === 0 && !is_rtl){
         page_loc = 1;
     }
@@ -205,7 +206,19 @@ function set_page(){
         left_page.src = pages[left_index];
         right_page.src = pages[right_index];
     }
+    select_carousel_page();
     scroll_carousel_to_page_loc();
+}
+
+function select_carousel_page(){
+    for(let child of carousel.children){
+        child.classList.remove('selected');
+    }
+    let index = Math.floor((page_loc - 1) / 2 + 1);
+    if(is_rtl){
+        index = carousel.children.length - 1 - index;
+    }
+    carousel.children[index].classList.add('selected');
 }
 
 function disable_controls(is_disabled){
@@ -236,9 +249,9 @@ function populate_carousel(){
         return;  // No book loaded.
     }
     let horses = [];
-    const cover_horse = document.createElement('div');
+    const cover_horse = document.createElement('a');
     cover_horse.setAttribute('class', 'horse');
-    cover_horse.addEventListener('click', () => {page_loc = 0; set_page();});
+    cover_horse.addEventListener('click', (e) => {page_loc = 0; set_page();});
     horses.push(cover_horse);
 
     const cover_spread = document.createElement('img');
@@ -249,9 +262,9 @@ function populate_carousel(){
     for(let i = 1; i < pages.length; i += 2){
         let left_index = is_rtl ? i + 1 : i;
         let right_index = is_rtl ? i : i + 1;
-        const spread_horse = document.createElement('div');
+        const spread_horse = document.createElement('a');
         spread_horse.setAttribute('class', 'horse');
-        spread_horse.addEventListener('click', () => {page_loc = i; set_page();});
+        spread_horse.addEventListener('click', (e) => {page_loc = i; set_page();});
         horses.push(spread_horse);
 
         const left_page = document.createElement('img');
@@ -274,8 +287,11 @@ function populate_carousel(){
 // BUG: Despite running after the carousel is populated, the size doesn't update fast enough.
 // BUG: Percentage doesn't quite scroll to the correct spot.
 function scroll_carousel_to_page_loc(){
-    let page_loc_percent = page_loc / pages.length;
-    let scroll_distance = is_rtl ? (1 - page_loc_percent) * carousel.scrollWidth : page_loc_percent * carousel.scrollWidth;
-    console.log(`${page_loc_percent}, ${scroll_distance}`);
+    let index = Math.floor((page_loc - 1) / 2 + 1);
+    let location_percent = index / (carousel.children.length - 1);
+    let carousel_width = carousel.scrollWidth + carousel.offsetWidth;
+    let scroll_distance = is_rtl ? (1 - location_percent) * carousel_width : location_percent * carousel_width;
+    scroll_distance -= carousel.offsetWidth / 2;
+    console.log(`index: ${index}, %: ${location_percent}, carouselW: ${carousel_width}, px: ${scroll_distance}`);
     carousel.scrollLeft = scroll_distance;
 }
