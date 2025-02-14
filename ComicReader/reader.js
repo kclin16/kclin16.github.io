@@ -11,7 +11,8 @@
 [x] Set background color
 [ ] Fix all BUG
 [x] Set border around page_loc on carousel
-[ ] Scroll Carousel to page_loc WHEN MENU OPENS
+[x] Scroll Carousel to page_loc WHEN MENU OPENS
+[x] Change number counter to a slider.
 [ ] NTH: Can carousel size be draggable?
 [ ] NTH: Can carousel have better response time?
 [ ] NTH: Can I unzip the EPUB with the production verison of zip.js instead of the debug version?
@@ -45,7 +46,7 @@ function init(){
     document.getElementById('rtl').addEventListener('change', toggle_rtl);
     document.getElementById('shift').addEventListener('change', toggle_shift);
     // Disable typing in number field.
-    document.getElementById('spacing').addEventListener('keydown', (e) => {e.preventDefault();});
+    document.getElementById('spacing').addEventListener('keydown', (e) => {if(e.code == 'ArrowDown' || e.code == 'ArrowUp') e.preventDefault();});
     document.getElementById('spacing').addEventListener('input', update_page_gap);
     document.getElementById('background').addEventListener('input', update_background_color);
     document.getElementById('close').addEventListener('click', hide_controls);
@@ -55,6 +56,8 @@ function init(){
     document.getElementById('flip_right').addEventListener('click', flip_right_page);
     document.addEventListener('keyup', check_key);
     document.getElementById('summon_controls').addEventListener('click', show_controls);
+    const carousel_observer = new ResizeObserver(scroll_carousel_to_page_loc);
+    carousel_observer.observe(carousel, {box: 'content-box'});
 }
 init();
 
@@ -89,6 +92,7 @@ function toggle_shift(e){
 }
 
 function show_controls(){
+    scroll_carousel_to_page_loc();
     controls.style.visibility = 'visible';
 }
 
@@ -98,18 +102,21 @@ function hide_controls(){
 
 // BUG Carousel scrollbars respond to arrow keys.
 function check_key(e){
-    if(e.code === 'ArrowLeft'){
-        flip_left_page();
+    if(controls.style.visibility == 'hidden'){
+        if(e.code === 'ArrowLeft'){
+            flip_left_page();
+        }
+        else if(e.code == 'ArrowRight'){
+            flip_right_page();
+        }
     }
-    else if(e.code == 'ArrowRight'){
-        flip_right_page();
-    }
-    else if(e.code == 'ArrowUp'){
+    if(e.code == 'ArrowUp'){
         show_controls();
     }
     else if(e.code == 'ArrowDown'){
         hide_controls();
     }
+
 }
 
 function update_page_gap(e){
@@ -167,7 +174,7 @@ async function load_book(){
 }
 
 function flip_left_page(){
-    //hide_controls();
+    hide_controls();
     if(page_loc === 0 && is_rtl){
         page_loc = 1;
     }
@@ -179,7 +186,7 @@ function flip_left_page(){
 }
 
 function flip_right_page(){
-    //hide_controls();
+    hide_controls();
     if(page_loc === 0 && !is_rtl){
         page_loc = 1;
     }
@@ -207,7 +214,6 @@ function set_page(){
         right_page.src = pages[right_index];
     }
     select_carousel_page();
-    scroll_carousel_to_page_loc();
 }
 
 function select_carousel_page(){
@@ -251,7 +257,11 @@ function populate_carousel(){
     let horses = [];
     const cover_horse = document.createElement('a');
     cover_horse.setAttribute('class', 'horse');
-    cover_horse.addEventListener('click', (e) => {page_loc = 0; set_page();});
+    cover_horse.addEventListener('click', (e) => {
+        page_loc = 0;
+        set_page();
+        scroll_carousel_to_page_loc();
+    });
     horses.push(cover_horse);
 
     const cover_spread = document.createElement('img');
@@ -264,7 +274,11 @@ function populate_carousel(){
         let right_index = is_rtl ? i : i + 1;
         const spread_horse = document.createElement('a');
         spread_horse.setAttribute('class', 'horse');
-        spread_horse.addEventListener('click', (e) => {page_loc = i; set_page();});
+        spread_horse.addEventListener('click', (e) => {
+            page_loc = i;
+            set_page();
+            scroll_carousel_to_page_loc();
+        });
         horses.push(spread_horse);
 
         const left_page = document.createElement('img');
@@ -284,14 +298,10 @@ function populate_carousel(){
     carousel.replaceChildren(...horses);
 }
 
-// BUG: Despite running after the carousel is populated, the size doesn't update fast enough.
-// BUG: Percentage doesn't quite scroll to the correct spot.
 function scroll_carousel_to_page_loc(){
-    let index = Math.floor((page_loc - 1) / 2 + 1);
-    let location_percent = index / (carousel.children.length - 1);
-    let carousel_width = carousel.scrollWidth + carousel.offsetWidth;
-    let scroll_distance = is_rtl ? (1 - location_percent) * carousel_width : location_percent * carousel_width;
-    scroll_distance -= carousel.offsetWidth / 2;
-    console.log(`index: ${index}, %: ${location_percent}, carouselW: ${carousel_width}, px: ${scroll_distance}`);
-    carousel.scrollLeft = scroll_distance;
+    if(pages.length > 0){
+        let index = Math.floor((page_loc - 1) / 2 + 1);
+        if(is_rtl) index = carousel.children.length - 1 - index;
+        carousel.scrollLeft = carousel.children[index].offsetLeft + (carousel.children[index].offsetWidth - carousel.offsetWidth) / 2;
+    }
 }
