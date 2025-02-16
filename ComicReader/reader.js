@@ -13,11 +13,12 @@
 [x] Set border around page_loc on carousel
 [x] Scroll Carousel to page_loc WHEN MENU OPENS
 [x] Change number counter to a slider.
+[x] Fullscreen toggle button
 [ ] NTH: Can carousel size be draggable?
 [ ] NTH: Can carousel have better response time?
 [ ] NTH: Can I unzip the EPUB with the production verison of zip.js instead of the debug version?
 [ ] NTH: Other ebook formats?
-[ ] Basic help pane & zip.js license credit
+[x] Basic help pane & zip.js license credit
 [ ] Save direction, shift, and page location settings per comic book.
 [ ] Save the other settings globally.
 [ ] Load settings per comic book.
@@ -39,9 +40,17 @@ const left_page = document.getElementById('page_left');
 const right_page = document.getElementById('page_right');
 const carousel = document.getElementById('carousel');
 const controls = document.getElementById('controls');
+const fullscreen_toggle = document.getElementById('toggle_fullscreen');
+const max_svg = document.getElementById('maximize');
+const min_svg = document.getElementById('minimize');
+const help_pane = document.getElementById('help_pane');
 
 function init(){
+    if(document.fullscreenEnabled){
+        fullscreen_toggle.appendChild(max_svg);
+    }
     document.body.style.backgroundColor = document.getElementById('background').value;
+    fullscreen_toggle.addEventListener('click', toggle_fullscreen);
     document.getElementById('open_control').onchange = load_book;
     document.getElementById('rtl').addEventListener('change', toggle_rtl);
     document.getElementById('shift').addEventListener('change', toggle_shift);
@@ -49,7 +58,7 @@ function init(){
     document.getElementById('spacing').addEventListener('keydown', (e) => {if(e.code == 'ArrowDown' || e.code == 'ArrowUp') e.preventDefault();});
     document.getElementById('spacing').addEventListener('input', update_page_gap);
     document.getElementById('background').addEventListener('input', update_background_color);
-    document.getElementById('close').addEventListener('click', hide_controls);
+    document.getElementById('close_menu').addEventListener('click', hide_controls);
     is_rtl = document.getElementById('rtl').checked;
     is_shifted = document.getElementById('shift').checked;
     document.getElementById('flip_left').addEventListener('click', flip_left_page);
@@ -58,8 +67,31 @@ function init(){
     document.getElementById('summon_controls').addEventListener('click', show_controls);
     const carousel_observer = new ResizeObserver(scroll_carousel_to_page_loc);
     carousel_observer.observe(carousel, {box: 'content-box'});
+    document.getElementById('help').addEventListener('click', () => {help_pane.style.visibility = 'visible';});
+    document.getElementById('close_help').addEventListener('click', () => {help_pane.style.visibility = 'hidden';});
 }
 init();
+
+function toggle_fullscreen(){
+    if(document.fullscreenElement){
+        document.exitFullscreen();
+        fullscreen_toggle.replaceChild(max_svg, min_svg);
+    }
+    else{
+        try{
+            document.body.requestFullscreen().catch(err => {
+                console.log(err)
+            }).then(()=>{
+                fullscreen_toggle.replaceChild(min_svg, max_svg);
+            });
+            
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+    
+}
 
 function toggle_rtl(e){
     is_rtl = e.target.checked;

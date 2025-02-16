@@ -31,10 +31,121 @@
                 <input type="color" id="background" name="background" value="#000000">
                 <label for="background">Background Color</label>
                 <progress id="progress" value="0" max="100" style="visibility: hidden;">0%</progress>
-                <input type="button" id="close" value="X">
+                <a href="#" id="close_menu" class="button">
+                    <svg height="25" width="25" class="icon"
+                        viewBox="0 0 25 25"
+                        version="1.1"
+                        id="xbox"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:svg="http://www.w3.org/2000/svg">
+                        <rect x="1" y="1" width="23" height="23" style="fill: none; stroke: currentcolor; stroke-width: 2;" />
+                        <line x1="6" y1="6" x2="19" y2="19" style="stroke: currentcolor; stroke-width: 2;" />
+                        <line x1="6" y1="19" x2="19" y2="6" style="stroke: currentcolor; stroke-width: 2;" />
+                    </svg>
+                </a>
+                <a href="#" id="toggle_fullscreen" class="button"></a>
+                <a href="#" id="help" class="button">
+                    <svg height="25" width="25" class="icon"
+                        viewBox="0 0 25 25"
+                        version="1.1"
+                        id="icircle"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:svg="http://www.w3.org/2000/svg">
+                        <circle r="11.5" cx="12.5" cy="12.5" style="fill: none; stroke: currentcolor; stroke-width: 2;" />
+                        <text x="9.25" y="20" style="fill: currentColor; font-family: serif; font-size: 18pt; font-weight: bold;">i</text>
+                    </svg>
+                </a>
             </div>
             <div id="carousel"></div>
         </div>
+
+        <!-- Help Pane -->
+        <div id="help_pane">
+            <p class="title">Help</p>
+            <a href="#" id="close_help" class="button">
+                <svg height="25" width="25" class="icon"
+                    viewBox="0 0 25 25"
+                    version="1.1"
+                    id="xbox"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:svg="http://www.w3.org/2000/svg">
+                    <rect x="1" y="1" width="23" height="23" style="fill: none; stroke: currentcolor; stroke-width: 2;" />
+                    <line x1="6" y1="6" x2="19" y2="19" style="stroke: currentcolor; stroke-width: 2;" />
+                    <line x1="6" y1="19" x2="19" y2="6" style="stroke: currentcolor; stroke-width: 2;" />
+                </svg>
+            </a>
+            <br>
+            <div class="content">
+                <svg height="300" width="300"
+                    viewBox="0 0 300 300"
+                    version="1.1"
+                    id="hot_spots"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:svg="http://www.w3.org/2000/svg">
+                    <rect x="1" y="1" width="298" height="99" style="fill:#FFAAAA; stroke: #000000; stroke-width: 1;" />
+                    <rect x="1" y="100" width="149" height="199" style="fill:#AAFFAA; stroke: #000000; stroke-width: 1;" />
+                    <rect x="150" y="100" width="149" height="199" style="fill:#AAAAFF; stroke: #000000; stroke-width: 1;" />
+                    <text x="50" y="55" style="fill: #000000; font-size: 14pt;">Open Menu and Carousel</text>
+                    <text x="20" y="200" style="fill: #000000; font-size: 14pt;">Flip Left Page</text>
+                    <text x="170" y="200" style="fill: #000000; font-size: 14pt;">Flip Right Page</text>
+                </svg>
+                <span id="instructions">
+                    <p>
+                        The graphic on the left shows clickable (and tappable) regions on the screen and their function. The <b>left</b> and <b>right</b> arrow keys will also flip the page left and right, respectively. The <b>up</b> and <b>down</b> arrow keys will respectively show and hide the menu.
+                    </p>
+                    <p>
+                        <b>Right-to-Left</b> Check this box if reading manga or other graphic novels that require flipping the left page to progress forward.
+                    </p>
+                    <p>
+                        <b>Shift Pages</b> Check this box if 2-page spreads appear broken and "shifted".
+                    </p>
+                    <p>
+                        <b>Gap Betwen Pages</b> If 2-page spreads being seemless don't matter to you, you can move the pages apart by dragging the slider.
+                    </p>
+                    <p>
+                        <b>Background Color</b> Click this to change the background color.
+                    </p>
+                    <hr>
+                    <p class="legal">
+                        This software uses <a href="https://github.com/gildas-lormeau/zip.js" target=”_blank”>zip.js</a> which is licensed under the <a href="http://github.com/gildas-lormeau/zip.js/blob/master/LICENSE" target=”_blank”>BSD-3-Clause license</a>.
+                    </p>
+                </span>
+            </div>
+        </div>
+
+        <!--- Dynamically placed SVGs -->
+        <svg height="25" width="25" class="icon"
+            viewBox="0 0 25 25"
+            version="1.1"
+            id="maximize"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:svg="http://www.w3.org/2000/svg">
+            <defs>
+                <marker id="arrow" markerWidth="20" markerHeight="20" refX="1" refY="4" orient="auto">
+                    <path d="M 3.5,6.5 L 1,4 L 3.5,1.5" style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:butt;" />
+                </marker>
+            </defs>
+            <line x1="2" y1="2" x2="10" y2="10" style="stroke: currentcolor; stroke-width: 2;" marker-start="url(#arrow)" />
+            <line x1="23" y1="2" x2="15" y2="10" style="stroke: currentcolor; stroke-width: 2;" marker-start="url(#arrow)" />
+            <line x1="2" y1="23" x2="10" y2="15" style="stroke: currentcolor; stroke-width: 2;" marker-start="url(#arrow)" />
+            <line x1="23" y1="23" x2="15" y2="15" style="stroke: currentcolor; stroke-width: 2;" marker-start="url(#arrow)" />
+        </svg>
+        <svg height="25" width="25" class="icon"
+            viewBox="0 0 25 25"
+            version="1.1"
+            id="minimize"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:svg="http://www.w3.org/2000/svg">
+            <defs>
+                <marker id="arrow" markerWidth="20" markerHeight="20" refX="1" refY="4" orient="auto">
+                    <path d="M 3.5,6.5 L 1,4 L 3.5,1.5" style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:butt;" />
+                </marker>
+            </defs>
+            <line x1="10" y1="10" x2="2" y2="2" style="stroke: currentcolor; stroke-width: 2;" marker-start="url(#arrow)" />
+            <line x1="15" y1="10" x2="23" y2="2" style="stroke: currentcolor; stroke-width: 2;" marker-start="url(#arrow)" />
+            <line x1="10" y1="15" x2="2" y2="23" style="stroke: currentcolor; stroke-width: 2;" marker-start="url(#arrow)" />
+            <line x1="15" y1="15" x2="23" y2="23" style="stroke: currentcolor; stroke-width: 2;" marker-start="url(#arrow)" />
+        </svg>
     </body>
     <script type="text/javascript" src="zip.js"></script>
     <script type="text/javascript" src="reader.js"></script>
