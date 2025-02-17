@@ -13,7 +13,7 @@
 [x] Set border around page_loc on carousel
 [x] Scroll Carousel to page_loc WHEN MENU OPENS
 [x] Change number counter to a slider.
-[x] Fullscreen toggle button
+[?] Fullscreen toggle button - CONSIDER SCRAPPING
 [ ] NTH: Can carousel size be draggable?
 [ ] NTH: Can carousel have better response time?
 [ ] NTH: Can I unzip the EPUB with the production verison of zip.js instead of the debug version?
@@ -30,9 +30,8 @@ var is_rtl;
 var is_shifted;
 var page_loc;
 var pages = [];
-// BUG: This needs to be the exact size of the pages, whatever size they are. So, dynamic, somehow.
-// Transparent 1000-pixel PNG
-const blank_page = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAPoCAYAAAAftpReAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAAYdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCA1LjEuMvu8A7YAAAC2ZVhJZklJKgAIAAAABQAaAQUAAQAAAEoAAAAbAQUAAQAAAFIAAAAoAQMAAQAAAAIAAAAxAQIAEAAAAFoAAABphwQAAQAAAGoAAAAAAAAA8nYBAOgDAADydgEA6AMAAFBhaW50Lk5FVCA1LjEuMgADAACQBwAEAAAAMDIzMAGgAwABAAAAAQAAAAWgBAABAAAAlAAAAAAAAAACAAEAAgAEAAAAUjk4AAIABwAEAAAAMDEwMAAAAACOO8FX0xe8TgAAABxJREFUWEftwTEBAAAAwqD1T20KP6AAAAAAgLcBE4gAAe0qMoEAAAAASUVORK5CYII=";
+var blank_page;
+var is_fullscreen = false;
 const cover_bg = document.getElementById('cover_bg');
 const pages_bg = document.getElementById('pages_bg');
 const cover_page = document.getElementById('page_cover');
@@ -48,13 +47,15 @@ const help_pane = document.getElementById('help_pane');
 function init(){
     if(document.fullscreenEnabled){
         fullscreen_toggle.appendChild(max_svg);
+        window.addEventListener('resize', check_for_fullscreen);
     }
     document.body.style.backgroundColor = document.getElementById('background').value;
     fullscreen_toggle.addEventListener('click', toggle_fullscreen);
     document.getElementById('open_control').onchange = load_book;
     document.getElementById('rtl').addEventListener('change', toggle_rtl);
     document.getElementById('shift').addEventListener('change', toggle_shift);
-    // Disable typing in number field.
+    // ArrowUp and ArrowDown are used for showing and hiding the menu, so disable in the slider.
+    // ArrowLeft and Arrow right are still usable and more intuitive.
     document.getElementById('spacing').addEventListener('keydown', (e) => {if(e.code == 'ArrowDown' || e.code == 'ArrowUp') e.preventDefault();});
     document.getElementById('spacing').addEventListener('input', update_page_gap);
     document.getElementById('background').addEventListener('input', update_background_color);
@@ -72,17 +73,21 @@ function init(){
 }
 init();
 
+// BUG This knows if we're fullscreen if the button is clicked, but not if F11 is pressed.
 function toggle_fullscreen(){
-    if(document.fullscreenElement){
+    console.log(`${document.fullscreenElement}, ${is_fullscreen}`);
+    if(document.fullscreenElement || is_fullscreen){
         document.exitFullscreen();
-        fullscreen_toggle.replaceChild(max_svg, min_svg);
+        fullscreen_toggle.replaceChildren(max_svg);
+        is_fullscreen = false;
     }
     else{
         try{
             document.body.requestFullscreen().catch(err => {
                 console.log(err)
             }).then(()=>{
-                fullscreen_toggle.replaceChild(min_svg, max_svg);
+                fullscreen_toggle.replaceChildren(min_svg);
+                is_fullscreen = true;
             });
             
         }
@@ -91,6 +96,30 @@ function toggle_fullscreen(){
         }
     }
     
+}
+
+function check_for_fullscreen(){
+    console.log(`${document.fullscreenElement}, ${is_fullscreen}`);
+    let max_height = window.screen.height,
+        max_width = window.screen.width,
+        current_height = window.innerHeight,
+        current_width = window.innerWidth;
+
+    if (max_width == current_width && max_height == current_height) {
+        fullscreen_toggle.replaceChildren(min_svg);
+        is_fullscreen = true;
+        // We're hiding this button because entering fullscreen via F11 is defferent than the API.
+        // It is impossible to trigger an F11 key press.
+        if(!document.fullscreenElement){
+            fullscreen_toggle.style.visibility = 'hidden';
+        }
+        
+    }
+    else{
+        fullscreen_toggle.replaceChildren(max_svg);
+        is_fullscreen = false;
+        fullscreen_toggle.style.visibility = 'visible';
+    }
 }
 
 function toggle_rtl(e){
@@ -132,7 +161,6 @@ function hide_controls(){
     controls.style.visibility = 'hidden';
 }
 
-// BUG Carousel scrollbars respond to arrow keys.
 function check_key(e){
     if(controls.style.visibility == 'hidden'){
         if(e.code === 'ArrowLeft'){
@@ -190,6 +218,17 @@ async function load_book(){
         }
     }
     await reader.close();
+
+    // Generate white PNG the same size as a single page. Then, continue setup.
+    let temp_img = new Image();
+    temp_img.onload = () => {
+        blank_page = generate_blank_image(temp_img.naturalWidth, temp_img.naturalHeight);
+        setup_reader();
+    }
+    temp_img.src = pages[1];
+}
+
+function setup_reader(){
     if(is_shifted){
         pages.splice(1, 0, blank_page);
     }
@@ -336,4 +375,18 @@ function scroll_carousel_to_page_loc(){
         if(is_rtl) index = carousel.children.length - 1 - index;
         carousel.scrollLeft = carousel.children[index].offsetLeft + (carousel.children[index].offsetWidth - carousel.offsetWidth) / 2;
     }
+}
+
+function generate_blank_image(width, height){
+    let canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    let context = canvas.getContext('2d');
+    for(let r = 0; r < canvas.height; r++){
+        for(let c = 0; c < canvas.width; c++){
+            context.fillStyle = '#FFFFFF';
+            context.fillRect(c, r, 1, 1);
+        }
+    }
+    return canvas.toDataURL('image/png');
 }
