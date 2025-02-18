@@ -13,15 +13,16 @@
 [x] Set border around page_loc on carousel
 [x] Scroll Carousel to page_loc WHEN MENU OPENS
 [x] Change number counter to a slider.
-[?] Fullscreen toggle button - CONSIDER SCRAPPING
+[x] Fullscreen toggle button
 [ ] NTH: Can carousel size be draggable?
 [ ] NTH: Can carousel have better response time?
 [ ] NTH: Can I unzip the EPUB with the production verison of zip.js instead of the debug version?
 [ ] NTH: Other ebook formats?
 [x] Basic help pane & zip.js license credit
 [ ] Save direction, shift, and page location settings per comic book.
-[ ] Save the other settings globally.
-[ ] Load settings per comic book.
+[ ] Save gap and background color globally.
+[ ] Load settings.
+[ ] Set settings per comic book.
 [x] Library licensing i&t
 [ ] More code comments for the GitHub community
 */
@@ -32,6 +33,7 @@ var page_loc;
 var pages = [];
 var blank_page;
 var is_fullscreen = false;
+var last_recorded_height = window.innerHeight;
 const cover_bg = document.getElementById('cover_bg');
 const pages_bg = document.getElementById('pages_bg');
 const cover_page = document.getElementById('page_cover');
@@ -43,11 +45,20 @@ const fullscreen_toggle = document.getElementById('toggle_fullscreen');
 const max_svg = document.getElementById('maximize');
 const min_svg = document.getElementById('minimize');
 const help_pane = document.getElementById('help_pane');
+const f11_event = new KeyboardEvent('keydown', {
+    key: 'F11',
+    code: 'F11',
+    which: 122,
+    keyCode: 122,
+    bubbles: true,
+    cancelable: true
+});
 
 function init(){
-    if(document.fullscreenEnabled){
+    if(request_fullscreen()){
         fullscreen_toggle.appendChild(max_svg);
-        window.addEventListener('resize', check_for_fullscreen);
+        window.addEventListener('resize', check_for_exit_fullscreen.bind(this));
+        window.addEventListener('keydown', toggle_custom_fullscreen.bind(this));
     }
     document.body.style.backgroundColor = document.getElementById('background').value;
     fullscreen_toggle.addEventListener('click', toggle_fullscreen);
@@ -73,53 +84,54 @@ function init(){
 }
 init();
 
-// BUG This knows if we're fullscreen if the button is clicked, but not if F11 is pressed.
-function toggle_fullscreen(){
-    console.log(`${document.fullscreenElement}, ${is_fullscreen}`);
-    if(document.fullscreenElement || is_fullscreen){
-        document.exitFullscreen();
-        fullscreen_toggle.replaceChildren(max_svg);
-        is_fullscreen = false;
-    }
-    else{
-        try{
-            document.body.requestFullscreen().catch(err => {
-                console.log(err)
-            }).then(()=>{
-                fullscreen_toggle.replaceChildren(min_svg);
-                is_fullscreen = true;
-            });
-            
-        }
-        catch(error){
-            console.log(error);
-        }
-    }
-    
+function toggle_custom_fullscreen(event){
+    if (event.key === "F11") {
+        event.preventDefault();
+        toggle_fullscreen();
+      }
 }
 
-function check_for_fullscreen(){
-    console.log(`${document.fullscreenElement}, ${is_fullscreen}`);
-    let max_height = window.screen.height,
-        max_width = window.screen.width,
-        current_height = window.innerHeight,
-        current_width = window.innerWidth;
+function request_fullscreen() {
+    return (
+        document.body.requestFullscreen ||
+        document.body["mozRequestFullscreen"] ||
+        document.body["msRequestFullscreen"] ||
+        document.body["webkitRequestFullscreen"]
+    );
+}
 
-    if (max_width == current_width && max_height == current_height) {
-        fullscreen_toggle.replaceChildren(min_svg);
-        is_fullscreen = true;
-        // We're hiding this button because entering fullscreen via F11 is defferent than the API.
-        // It is impossible to trigger an F11 key press.
-        if(!document.fullscreenElement){
-            fullscreen_toggle.style.visibility = 'hidden';
-        }
-        
+function exit_fullscreen() {
+    return (
+        document["webkitExitFullscreen"] ||
+        document["msExitFullscreen"] ||
+        document["mozCancelFullScreen"] ||
+        document.exitFullscreen
+    );
+}
+
+function toggle_fullscreen(){
+    if(!is_fullscreen && request_fullscreen()){
+        request_fullscreen().call(document.body).catch(err => {
+            console.log(err)
+        }).then(() => {
+            fullscreen_toggle.replaceChildren(min_svg);
+            is_fullscreen = true;
+        });
     }
-    else{
+    else if(is_fullscreen && exit_fullscreen()){
+        exit_fullscreen().call(document)
+        is_fullscreen = false;
+        fullscreen_toggle.replaceChildren(max_svg);
+    }
+}
+
+function check_for_exit_fullscreen(){
+    let current_height = window.innerHeight;
+    if (is_fullscreen && current_height <= last_recorded_height) {
         fullscreen_toggle.replaceChildren(max_svg);
         is_fullscreen = false;
-        fullscreen_toggle.style.visibility = 'visible';
     }
+    last_recorded_height = current_height;
 }
 
 function toggle_rtl(e){
