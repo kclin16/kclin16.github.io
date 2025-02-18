@@ -59,9 +59,12 @@ function init(){
         fullscreen_toggle.appendChild(max_svg);
         window.addEventListener('resize', check_for_exit_fullscreen.bind(this));
         window.addEventListener('keydown', toggle_custom_fullscreen.bind(this));
+        fullscreen_toggle.addEventListener('click', toggle_fullscreen);
+    }
+    else{
+        document.getElementById('top-bar').removeChild(fullscreen_toggle);
     }
     document.body.style.backgroundColor = document.getElementById('background').value;
-    fullscreen_toggle.addEventListener('click', toggle_fullscreen);
     document.getElementById('open_control').onchange = load_book;
     document.getElementById('rtl').addEventListener('change', toggle_rtl);
     document.getElementById('shift').addEventListener('change', toggle_shift);
