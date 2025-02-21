@@ -19,10 +19,10 @@
 [ ] NTH: Can I unzip the EPUB with the production verison of zip.js instead of the debug version?
 [ ] NTH: Other ebook formats?
 [x] Basic help pane & zip.js license credit
-[ ] Save direction, shift, and page location settings per comic book.
-[ ] Save gap and background color globally.
-[ ] Load settings.
-[ ] Set settings per comic book.
+[x] Save direction, shift, and page location settings per comic book.
+[x] Save gap and background color globally.
+[x] Load settings.
+[x] Set settings per comic book.
 [x] Library licensing i&t
 [ ] More code comments for the GitHub community
 */
@@ -34,6 +34,7 @@ var pages = [];
 var blank_page;
 var is_fullscreen = false;
 var last_recorded_height = window.innerHeight;
+var loaded_book;
 const cover_bg = document.getElementById('cover_bg');
 const pages_bg = document.getElementById('pages_bg');
 const cover_page = document.getElementById('page_cover');
@@ -55,6 +56,7 @@ const f11_event = new KeyboardEvent('keydown', {
 });
 
 function init(){
+    load_global();
     if(request_fullscreen()){
         fullscreen_toggle.appendChild(max_svg);
         window.addEventListener('resize', check_for_exit_fullscreen.bind(this));
@@ -64,7 +66,6 @@ function init(){
     else{
         document.getElementById('top-bar').removeChild(fullscreen_toggle);
     }
-    document.body.style.backgroundColor = document.getElementById('background').value;
     document.getElementById('open_control').onchange = load_book;
     document.getElementById('rtl').addEventListener('change', toggle_rtl);
     document.getElementById('shift').addEventListener('change', toggle_shift);
@@ -74,8 +75,6 @@ function init(){
     document.getElementById('spacing').addEventListener('input', update_page_gap);
     document.getElementById('background').addEventListener('input', update_background_color);
     document.getElementById('close_menu').addEventListener('click', hide_controls);
-    is_rtl = document.getElementById('rtl').checked;
-    is_shifted = document.getElementById('shift').checked;
     document.getElementById('flip_left').addEventListener('click', flip_left_page);
     document.getElementById('flip_right').addEventListener('click', flip_right_page);
     document.addEventListener('keyup', check_key);
@@ -143,6 +142,7 @@ function toggle_rtl(e){
     set_page();
 }
 
+// BUG Something gets messed up at the array end when shifting.
 function toggle_shift(e){
     is_shifted = e.target.checked;
     if(pages.length === 0){
@@ -196,14 +196,14 @@ function check_key(e){
 
 function update_page_gap(e){
     let space = e.target.value;
-    space = Math.floor(Math.max(0, space));
-    e.target.value = space;
     left_page.style.marginRight = `${space}px`;
     right_page.style.marginLeft = `${space}px`;
+    save_global();
 }
 
 function update_background_color(e){
     document.body.style.backgroundColor = e.target.value;
+    save_global();
 }
 
 async function load_book(){
@@ -215,6 +215,8 @@ async function load_book(){
     }
     reset_progress_bar();
     console.log(selected_file);
+    loaded_book = selected_file.name;
+    load_book_settings();
     const reader = new zip.ZipReader(new zip.BlobReader(selected_file));
     let entries = await reader.getEntries();
     pages = [];
@@ -254,7 +256,6 @@ function setup_reader(){
     hide_progress_bar();
     populate_carousel();
     disable_controls(false);
-    page_loc = 0;
     document.getElementById('page_cover').src = pages[0];
     set_page();
 }
@@ -300,6 +301,7 @@ function set_page(){
         right_page.src = pages[right_index];
     }
     select_carousel_page();
+    save_book();
 }
 
 function select_carousel_page(){
@@ -404,4 +406,55 @@ function generate_blank_image(width, height){
         }
     }
     return canvas.toDataURL('image/png');
+}
+
+// ------------- SAVING/LOADING ---------------
+function save_global(){
+    localStorage.setItem('comic_bgcolor', document.body.style.backgroundColor);
+    // Only save one side, since the values are equal.
+    localStorage.setItem('comic_panelgap', left_page.style.marginRight);
+}
+
+function save_book(){
+    if(loaded_book){
+        console.log(`Saving: ${page_loc} ${is_rtl} ${is_shifted}`);
+        localStorage.setItem(`comic_${loaded_book}`, `${page_loc} ${is_rtl} ${is_shifted}`);
+    }
+}
+
+function load_global(){
+    const bgcolor = localStorage.getItem('comic_bgcolor');
+    document.getElementById('background').value = bgcolor ? rgb_to_hex(bgcolor) : '#000000';
+    document.body.style.backgroundColor = bgcolor ? bgcolor : document.getElementById('background').value;
+    const panel_gap = localStorage.getItem('comic_panelgap');
+    document.getElementById('spacing').value = panel_gap ? parseInt(panel_gap) : 0;
+    left_page.style.marginRight = panel_gap ? panel_gap : `${document.getElementById('spacing').value}px`;
+    right_page.style.marginLeft = panel_gap ? panel_gap : `${document.getElementById('spacing').value}px`;
+}
+
+function load_book_settings(){
+    if(loaded_book){
+        const settings = localStorage.getItem(`comic_${loaded_book}`).split(' ');
+        if(settings){
+            console.log(`Loading: ${settings}`);
+            is_rtl = settings[1] == 'true';
+            document.getElementById('rtl').checked = settings[1] == 'true';
+            is_shifted = settings[2] == 'true';
+            document.getElementById('shift').checked = settings[1] == 'true';
+            page_loc = parseInt(settings[0]);
+        }
+        else{
+            is_rtl = document.getElementById('rtl').checked;
+            is_shifted = document.getElementById('shift').checked;
+            page_loc = 0;
+        }
+    }
+}
+
+function rgb_to_hex(rgb){
+    let components = rgb.slice(4, -1).split(',');
+    let r = parseInt(components[0]);
+    let g = parseInt(components[1]);
+    let b = parseInt(components[2]);
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
