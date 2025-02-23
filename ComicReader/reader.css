@@ -12,6 +12,13 @@ body {
 #top-bar {
     margin: 5px;
     margin-bottom: 10px;
+    overflow: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    white-space: nowrap;
+    justify-content: flex-start;
+    width: 99.5vw;
 }
 
 /* 1vw is 1% viewport width. Seems counter-intuitive. */
@@ -87,9 +94,9 @@ a.selected {
 }
 
 .button {
-    float: right;
+    text-decoration: none;
     color: #000000;
-    margin-left: 10px;
+    margin-left: 20px;
 }
 
 .icon {
@@ -115,6 +122,7 @@ svg {
 }
 
 label {
+    margin-left: 3px;
     margin-right: 20px;
 }
 
@@ -152,4 +160,22 @@ label {
     display: inline;
     font-weight: bold;
     font-size: 14pt;
+}
+
+#progress {
+    visibility: hidden;
+    margin-left: 5px;
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+}
+
+#file_title {
+    display: inline;
+    font-weight: bold;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }

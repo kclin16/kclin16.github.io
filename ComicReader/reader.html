@@ -15,12 +15,16 @@
             <img id="page_left" class="page">
             <img id="page_right" class="page">
         </div>
+        <progress id="progress" value="0" max="100">0%</progress>
         <div id="summon_controls"></div>
         <div id="flip_left" class="page_flip"></div>
         <div id="flip_right" class="page_flip"></div>
         <div id="controls">
             <div id="top-bar">
-                <input type="file" id="open_control" accept="application/epub+zip">
+                <label>
+                    <button id="load_file">Load Book</button>
+                    <input type="file" id="open_control" accept="application/epub+zip" hidden>
+                </label>
                 <input type="checkbox" id="rtl" name="rtl" checked>
                 <label for="rtl">Right-to-Left</label>
                 <input type="checkbox" id="shift" name="shift">
@@ -29,7 +33,19 @@
                 <label for="spacing">Gap Between Pages</label>
                 <input type="color" id="background" name="background" value="#000000">
                 <label for="background">Background Color</label>
-                <progress id="progress" value="0" max="100" style="visibility: hidden;">0%</progress>
+                <p id="file_title">The overflow CSS shorthand property sets the desired behavior when content does not fit in the element's padding box (overflows) in the horizontal and/or vertical direction.</p>
+                <a href="#" id="help" class="button">
+                    <svg height="25" width="25" class="icon"
+                        viewBox="0 0 25 25"
+                        version="1.1"
+                        id="icircle"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:svg="http://www.w3.org/2000/svg">
+                        <circle r="11.5" cx="12.5" cy="12.5" style="fill: none; stroke: currentcolor; stroke-width: 2;" />
+                        <text x="9.25" y="20" style="fill: currentColor; font-family: serif; font-size: 18pt; font-weight: bold;">i</text>
+                    </svg>
+                </a>
+                <a href="#" id="toggle_fullscreen" class="button"></a>
                 <a href="#" id="close_menu" class="button">
                     <svg height="25" width="25" class="icon"
                         viewBox="0 0 25 25"
@@ -40,18 +56,6 @@
                         <rect x="1" y="1" width="23" height="23" style="fill: none; stroke: currentcolor; stroke-width: 2;" />
                         <line x1="6" y1="6" x2="19" y2="19" style="stroke: currentcolor; stroke-width: 2;" />
                         <line x1="6" y1="19" x2="19" y2="6" style="stroke: currentcolor; stroke-width: 2;" />
-                    </svg>
-                </a>
-                <a href="#" id="toggle_fullscreen" class="button"></a>
-                <a href="#" id="help" class="button">
-                    <svg height="25" width="25" class="icon"
-                        viewBox="0 0 25 25"
-                        version="1.1"
-                        id="icircle"
-                        xmlns="http://www.w3.org/2000/svg"
-                        xmlns:svg="http://www.w3.org/2000/svg">
-                        <circle r="11.5" cx="12.5" cy="12.5" style="fill: none; stroke: currentcolor; stroke-width: 2;" />
-                        <text x="9.25" y="20" style="fill: currentColor; font-family: serif; font-size: 18pt; font-weight: bold;">i</text>
                     </svg>
                 </a>
             </div>

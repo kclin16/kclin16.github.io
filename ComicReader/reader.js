@@ -12,6 +12,7 @@ var blank_page;
 var is_fullscreen = false;
 var last_recorded_height = window.innerHeight;
 var loaded_book;
+const file_title = document.getElementById('file_title');
 const cover_bg = document.getElementById('cover_bg');
 const pages_bg = document.getElementById('pages_bg');
 const cover_page = document.getElementById('page_cover');
@@ -43,6 +44,8 @@ function init(){
     else{
         document.getElementById('top-bar').removeChild(fullscreen_toggle);
     }
+    document.getElementById('load_file').onclick = () => {
+        document.getElementById('open_control').dispatchEvent(new MouseEvent("click"));}
     document.getElementById('open_control').onchange = load_book;
     document.getElementById('rtl').addEventListener('change', toggle_rtl);
     document.getElementById('shift').addEventListener('change', toggle_shift);
@@ -220,6 +223,7 @@ async function load_book(){
     let temp_img = new Image();
     temp_img.onload = () => {
         blank_page = generate_blank_image(temp_img.naturalWidth, temp_img.naturalHeight);
+        file_title.innerText = selected_file.name;
         setup_reader();
     }
     temp_img.src = pages[1];
