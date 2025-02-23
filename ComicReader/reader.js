@@ -1,9 +1,7 @@
-/* TODO
-[ ] NTH: Can carousel size be draggable?
-[ ] NTH: Can carousel have better response time?
-[ ] NTH: Can I unzip the EPUB with the production verison of zip.js instead of the debug version?
-[ ] NTH: Other ebook formats?
-[ ] More code comments for the GitHub community
+/* TODO (Nice-to-haves)
+[ ] Can carousel size be draggable?
+[ ] Can I unzip the EPUB with the production verison of zip.js instead of the debug version?
+[ ] Other ebook formats?
 */
 
 var is_rtl;
@@ -50,7 +48,9 @@ function init(){
     document.getElementById('shift').addEventListener('change', toggle_shift);
     // ArrowUp and ArrowDown are used for showing and hiding the menu, so disable in the slider.
     // ArrowLeft and Arrow right are still usable and more intuitive.
-    document.getElementById('spacing').addEventListener('keydown', (e) => {if(e.code == 'ArrowDown' || e.code == 'ArrowUp') e.preventDefault();});
+    document.getElementById('spacing').addEventListener('keydown', (e) => {
+        if(e.code === 'ArrowDown' || e.code === 'ArrowUp') e.preventDefault();
+    });
     document.getElementById('spacing').addEventListener('input', update_page_gap);
     document.getElementById('background').addEventListener('input', update_background_color);
     document.getElementById('close_menu').addEventListener('click', hide_controls);
@@ -155,18 +155,18 @@ function hide_controls(){
 }
 
 function check_key(e){
-    if(controls.style.visibility == 'hidden'){
+    if(controls.style.visibility === 'hidden'){
         if(e.code === 'ArrowLeft'){
             flip_left_page();
         }
-        else if(e.code == 'ArrowRight'){
+        else if(e.code === 'ArrowRight'){
             flip_right_page();
         }
     }
-    if(e.code == 'ArrowUp'){
+    if(e.code === 'ArrowUp'){
         show_controls();
     }
-    else if(e.code == 'ArrowDown'){
+    else if(e.code === 'ArrowDown'){
         hide_controls();
     }
 
@@ -199,7 +199,9 @@ async function load_book(){
     let entries = await reader.getEntries();
     pages = [];
     if(entries && entries.length){
-        entries = entries.filter( (entry) => {return entry.filename.startsWith('cover') || entry.filename.startsWith('images/') && entry.filename.length > 7});
+        entries = entries.filter( (entry) => {
+            return entry.filename.startsWith('cover') || entry.filename.startsWith('images/') && entry.filename.length > 7;
+        });
         entries.sort( (a, b) => {a.filename < b.filename ? -1 : 1});
         let counter = 0;
         for(let entry of entries){
@@ -224,16 +226,13 @@ async function load_book(){
 }
 
 function setup_reader(){
-    console.log(`Before shift: ${pages.length}`);
     if(is_shifted){
         pages.splice(1, 0, blank_page);
     }
-    console.log(`After shift: ${pages.length}`);
     // Substract 1 for the cover
     if((pages.length - 1) % 2 !== 0){
         pages.push(blank_page);
     }
-    console.log(`After normalize: ${pages.length}`);
     hide_progress_bar();
     populate_carousel();
     disable_controls(false);
@@ -249,7 +248,6 @@ function flip_left_page(){
     else{
         page_loc += is_rtl ? 2 : -2;
     }
-    //console.log(`flip left: ${page_loc}`);
     set_page();
 }
 
@@ -261,8 +259,6 @@ function flip_right_page(){
     else{
         page_loc += is_rtl ? -2 : 2;
     }
-    
-    //console.log(`flip right: ${page_loc}`);
     set_page();
 }
 
@@ -277,7 +273,6 @@ function set_page(){
     if(page_loc > 0){
         let left_index = is_rtl ? page_loc + 1 : page_loc;
         let right_index = is_rtl ? page_loc : page_loc + 1;
-        //console.log(`Indexes: ${left_index}, ${right_index}`);
         left_page.src = pages[left_index];
         right_page.src = pages[right_index];
     }
@@ -398,7 +393,7 @@ function save_global(){
 
 function save_book(){
     if(loaded_book){
-        console.log(`Saving: ${page_loc} ${is_rtl} ${is_shifted}`);
+        //console.log(`Saving: ${page_loc} ${is_rtl} ${is_shifted}`);
         localStorage.setItem(`comic_${loaded_book}`, `${page_loc} ${is_rtl} ${is_shifted}`);
     }
 }
@@ -418,10 +413,10 @@ function load_book_settings(){
         const settings = localStorage.getItem(`comic_${loaded_book}`).split(' ');
         if(settings){
             console.log(`Loading: ${settings}`);
-            is_rtl = settings[1] == 'true';
-            document.getElementById('rtl').checked = settings[1] == 'true';
-            is_shifted = settings[2] == 'true';
-            document.getElementById('shift').checked = settings[2] == 'true';
+            is_rtl = settings[1] === 'true';
+            document.getElementById('rtl').checked = settings[1] === 'true';
+            is_shifted = settings[2] === 'true';
+            document.getElementById('shift').checked = settings[2] === 'true';
             page_loc = parseInt(settings[0]);
         }
         else{
