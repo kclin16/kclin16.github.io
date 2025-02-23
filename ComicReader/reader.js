@@ -414,8 +414,9 @@ function load_global(){
 
 function load_book_settings(){
     if(loaded_book){
-        const settings = localStorage.getItem(`comic_${loaded_book}`).split(' ');
+        let settings = localStorage.getItem(`comic_${loaded_book}`);
         if(settings){
+            settings = settings.split(' ')
             console.log(`Loading: ${settings}`);
             is_rtl = settings[1] === 'true';
             document.getElementById('rtl').checked = settings[1] === 'true';
