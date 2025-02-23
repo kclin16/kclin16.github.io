@@ -1,29 +1,8 @@
 /* TODO
-[x] Center cover
-[x] Populate Carousel
-[x] Jump-to on carousel click
-[x] Click-areas for forward/backward
-[x] Arrow keys for forward/backward
-[x] Click-area for menu summon
-[x] RTL/LTR
-[x] Shift pages by 1
-[x] page spacing control
-[x] Set background color
-[ ] Fix all BUG
-[x] Set border around page_loc on carousel
-[x] Scroll Carousel to page_loc WHEN MENU OPENS
-[x] Change number counter to a slider.
-[x] Fullscreen toggle button
 [ ] NTH: Can carousel size be draggable?
 [ ] NTH: Can carousel have better response time?
 [ ] NTH: Can I unzip the EPUB with the production verison of zip.js instead of the debug version?
 [ ] NTH: Other ebook formats?
-[x] Basic help pane & zip.js license credit
-[x] Save direction, shift, and page location settings per comic book.
-[x] Save gap and background color globally.
-[x] Load settings.
-[x] Set settings per comic book.
-[x] Library licensing i&t
 [ ] More code comments for the GitHub community
 */
 
@@ -142,7 +121,6 @@ function toggle_rtl(e){
     set_page();
 }
 
-// BUG Something gets messed up at the array end when shifting.
 function toggle_shift(e){
     is_shifted = e.target.checked;
     if(pages.length === 0){
@@ -246,13 +224,16 @@ async function load_book(){
 }
 
 function setup_reader(){
+    console.log(`Before shift: ${pages.length}`);
     if(is_shifted){
         pages.splice(1, 0, blank_page);
     }
+    console.log(`After shift: ${pages.length}`);
     // Substract 1 for the cover
-    if(pages.length - 1 % 2 !== 0){
+    if((pages.length - 1) % 2 !== 0){
         pages.push(blank_page);
     }
+    console.log(`After normalize: ${pages.length}`);
     hide_progress_bar();
     populate_carousel();
     disable_controls(false);
@@ -440,7 +421,7 @@ function load_book_settings(){
             is_rtl = settings[1] == 'true';
             document.getElementById('rtl').checked = settings[1] == 'true';
             is_shifted = settings[2] == 'true';
-            document.getElementById('shift').checked = settings[1] == 'true';
+            document.getElementById('shift').checked = settings[2] == 'true';
             page_loc = parseInt(settings[0]);
         }
         else{
